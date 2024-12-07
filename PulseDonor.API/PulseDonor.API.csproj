@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\PulseDonor.Application\PulseDonor.Application.csproj" />
+    <ProjectReference Include="..\PulseDonor.Core\PulseDonor.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>
