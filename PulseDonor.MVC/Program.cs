@@ -1,11 +1,22 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+//builder.Services.AddControllersWithViews();
+builder.Services.AddMvc();
+
+builder.Services.AddControllersWithViews()
+	.AddRazorRuntimeCompilation()
+	.AddCookieTempDataProvider()
+	.AddMvcOptions(options =>
+	{
+		options.ModelMetadataDetailsProviders.Clear(); // Clear DataAnnotations fallback
+	});
+
 
 #if DEBUG
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 #endif
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
