@@ -1,3 +1,8 @@
+using PulseDonor.MVC.City.Interfaces;
+using PulseDonor.MVC.City.Services;
+using PulseDonor.MVC.Helper.Interfaces;
+using PulseDonor.MVC.Helper.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -17,6 +22,11 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 #endif
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<IApiClientHelper, ApiClientHelper>();
+builder.Services.AddScoped<ICityService, CityService>();
+
+builder.Services.AddHttpClient();
 
 var app = builder.Build();
 

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PulseDonor.Application.Authentication.Interfaces;
 using PulseDonor.Application.Authentication.Services;
+using PulseDonor.Application.City.Interfaces;
+using PulseDonor.Application.City.Services;
 using PulseDonor.Core;
 using PulseDonor.Infrastructure.Models;
 
@@ -22,6 +24,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+//builder.Services.AddScoped<ICityService, CityService>();
 
 var app = builder.Build();
 
