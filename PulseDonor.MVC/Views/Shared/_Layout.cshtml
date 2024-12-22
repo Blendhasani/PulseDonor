@@ -81,6 +81,7 @@ License: You must have a valid license purchased only from themeforest(the above
     <link href="~/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
     <link href="~/plugins/custom/prismjs/prismjs.bundle.css" rel="stylesheet" type="text/css" />
     <link href="~/css/style.bundle.css" rel="stylesheet" type="text/css" />
+
     <!--end::Global Theme Styles-->
     <!--begin::Layout Themes(used by all pages)-->
     <!--end::Layout Themes-->
@@ -2334,6 +2335,7 @@ License: You must have a valid license purchased only from themeforest(the above
             "font-family": "Poppins"
         };
     </script>
+
     <!--end::Global Config-->
     <!--begin::Global Theme Bundle(used by all pages)-->
     <script src="~/plugins/global/plugins.bundle.js"></script>
@@ -2345,6 +2347,11 @@ License: You must have a valid license purchased only from themeforest(the above
     <!--end::Page Vendors-->
     <!--begin::Page Scripts(used by this page)-->
     <script src="~/js/pages/widgets.js"></script>
+
+
+    @RenderSection("Scripts", required: false)
+
+
     <!--end::Page Scripts-->
 </body>
 <!--end::Body-->

@@ -18,6 +18,12 @@ namespace PulseDonor.MVC.Controllers
 			return View();
 		}
 
+		public async Task<IActionResult> GetCities()
+		{
+			var result = await _cityService.GetCities();
+			return Json(result);
+		}
+
 		public IActionResult Add()
 		{
 			return PartialView("_Add");
@@ -31,15 +37,40 @@ namespace PulseDonor.MVC.Controllers
 				return View(model);
 			}
 
-			// Here we rely on the FrontService to use the URL and API helper to call the API
 			var result = await _cityService.AddCity(model);
 
 			return RedirectToAction("Index");
 		}
 
-		public IActionResult Edit()
+		public async Task<IActionResult> Edit(int id)
 		{
-			return PartialView("_Edit");
+			var result = await _cityService.GetCityById(id);
+			return PartialView("_Edit" , result);
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Edit(EditCityCommand model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			var result = await _cityService.EditCity(model);
+
+			return RedirectToAction("Index");
+		}
+
+		[HttpPost]
+		public async Task<IActionResult> Delete(int id)
+		{
+			if(id == 0)
+				return RedirectToAction("Index");
+
+			var result = await _cityService.DeleteCity(id);
+
+			return RedirectToAction("Index");
+
 		}
 
 	}

@@ -1,3 +1,5 @@
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using PulseDonor.Application.Authentication.Interfaces;
@@ -6,6 +8,7 @@ using PulseDonor.Application.City.Interfaces;
 using PulseDonor.Application.City.Services;
 using PulseDonor.Core;
 using PulseDonor.Infrastructure.Models;
+using PulseDonor.Application.City.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,8 +26,11 @@ builder.Services.AddIdentityCore<User>()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+
 builder.Services.AddScoped<IAuthService, AuthService>();
-//builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 
 var app = builder.Build();
 

@@ -38,6 +38,15 @@ namespace PulseDonor.MVC.Helper.Services
 			return await DeserializeResponse<TResult>(response);
 		}
 
+		public async Task<TResult> GetByIdAsync<TResult>(string url, int id)
+		{
+			// Append the int id as a query parameter
+			var fullUrl = $"{url}?id={id}";
+			var response = await _httpClient.GetAsync(fullUrl);
+			return await DeserializeResponse<TResult>(response);
+		}
+
+
 		public async Task<TResult> DeleteAsync<TResult>(string url)
 		{
 			var response = await _httpClient.DeleteAsync(url);
@@ -56,5 +65,7 @@ namespace PulseDonor.MVC.Helper.Services
 			var json = await response.Content.ReadAsStringAsync();
 			return JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
 		}
+
+		
 	}
 }

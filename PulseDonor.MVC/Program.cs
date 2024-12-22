@@ -1,7 +1,10 @@
+using FluentValidation.AspNetCore;
+using FluentValidation;
 using PulseDonor.MVC.City.Interfaces;
 using PulseDonor.MVC.City.Services;
 using PulseDonor.MVC.Helper.Interfaces;
 using PulseDonor.MVC.Helper.Services;
+using PulseDonor.MVC.City.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +20,9 @@ builder.Services.AddControllersWithViews()
 		options.ModelMetadataDetailsProviders.Clear(); // Clear DataAnnotations fallback
 	});
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<AddCityCommand>();
 
 #if DEBUG
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
