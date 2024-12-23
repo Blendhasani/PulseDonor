@@ -9,6 +9,8 @@ using PulseDonor.Application.City.Services;
 using PulseDonor.Core;
 using PulseDonor.Infrastructure.Models;
 using PulseDonor.Application.City.Commands;
+using PulseDonor.Application.User.Interfaces;
+using PulseDonor.Application.User.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,12 @@ builder.Services.AddIdentityCore<User>()
     .AddEntityFrameworkStores<DevPulsedonorContext>()
     .AddDefaultTokenProviders();
 
+//builder.Services.AddIdentity<User, IdentityRole<int>>()
+//	.AddEntityFrameworkStores<DevPulsedonorContext>()
+//	.AddDefaultTokenProviders();
+
+
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -31,6 +39,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();
+builder.Services.AddScoped<IUserAPIService, UserAPIService>();
 
 var app = builder.Build();
 

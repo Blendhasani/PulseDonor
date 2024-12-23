@@ -19,10 +19,10 @@ namespace PulseDonor.Application.Authentication.Services
     public class AuthService : IAuthService
     {
         private readonly DevPulsedonorContext _context;
-        private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IPasswordHasher<PulseDonor.Infrastructure.Models.User> _passwordHasher;
         private readonly IConfiguration _configuration;
 
-        public AuthService(DevPulsedonorContext context, IPasswordHasher<User> passwordHasher, IConfiguration configuration)
+        public AuthService(DevPulsedonorContext context, IPasswordHasher<PulseDonor.Infrastructure.Models.User> passwordHasher, IConfiguration configuration)
         {
             _context = context;
             _passwordHasher = passwordHasher;
@@ -32,15 +32,15 @@ namespace PulseDonor.Application.Authentication.Services
         public async Task<string> SignupAsync(SignupCommand command)
         {
             var dto = command.SignupDto;
-            var user = new User
-            {
+            var user = new PulseDonor.Infrastructure.Models.User
+			{
                 Id = Guid.NewGuid().ToString(),
                 UserName = dto.UserName,
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
                 GenderId = dto.GenderId,
-                EmailConfirmed = true,
+                //EmailConfirmed = true,
                 BloodTypeId = dto.BloodTypeId,
                 InsertedDate = DateTime.UtcNow,
                 IsActive = true,
@@ -66,7 +66,7 @@ namespace PulseDonor.Application.Authentication.Services
             return GenerateJwtToken(user);
         }
 
-        private string GenerateJwtToken(User user)
+        private string GenerateJwtToken(PulseDonor.Infrastructure.Models.User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);

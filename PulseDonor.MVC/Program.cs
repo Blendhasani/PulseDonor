@@ -5,6 +5,8 @@ using PulseDonor.MVC.City.Services;
 using PulseDonor.MVC.Helper.Interfaces;
 using PulseDonor.MVC.Helper.Services;
 using PulseDonor.MVC.City.Commands;
+using PulseDonor.MVC.User.Interfaces;
+using PulseDonor.MVC.User.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,6 +33,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IApiClientHelper, ApiClientHelper>();
 builder.Services.AddScoped<ICityService, CityService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddHttpClient();
 
