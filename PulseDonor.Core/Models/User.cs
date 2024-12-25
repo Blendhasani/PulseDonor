@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PulseDonor.Infrastructure.Models;
 
-public partial class User : IdentityUser<int>
+public partial class User : IdentityUser<Guid>
 {
     public string Id { get; set; } = null!;
 

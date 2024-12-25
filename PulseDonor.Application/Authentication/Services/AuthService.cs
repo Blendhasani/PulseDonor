@@ -69,7 +69,7 @@ namespace PulseDonor.Application.Authentication.Services
         private string GenerateJwtToken(PulseDonor.Infrastructure.Models.User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
+            var key = Encoding.UTF8.GetBytes("QFIHUFQIUWHHIUGY$$##352763256gJDGJGHJAD");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
@@ -79,6 +79,8 @@ namespace PulseDonor.Application.Authentication.Services
                 new Claim(ClaimTypes.Email, user.Email!)
             }),
                 Expires = DateTime.UtcNow.AddHours(1),
+                Issuer = "https://localhost:7269",
+                Audience = "https://localhost:7269", 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

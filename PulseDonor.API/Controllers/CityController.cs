@@ -1,21 +1,26 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PulseDonor.Application.City.Commands;
 using PulseDonor.Application.City.DTO;
 using PulseDonor.Application.City.Interfaces;
+using PulseDonor.Application.CurrentUser.Interface;
 
 namespace PulseDonor.API.Controllers
 {
-	[Route("api/[controller]")]
+    [Authorize]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class CityController : ControllerBase
 	{
 		private readonly ICityAPIService _cityService;
-
-		public CityController(ICityAPIService cityService)
+        private readonly ICurrentUser _currentUser;
+        public CityController(ICityAPIService cityService, ICurrentUser currentUser)
 		{
 			_cityService = cityService;
-		}
+            _currentUser = currentUser;
+        }
 
 		[HttpPost("Add")]
 		public async Task<int> AddCity(AddCityAPICommand entity)
@@ -24,10 +29,13 @@ namespace PulseDonor.API.Controllers
 			return result;
 		}
 
-		[HttpGet("GetList")]
+        [HttpGet("GetList")]
 		public async Task<List<CitiesAPIDto>> GetCities()
 		{
-			var result = await _cityService.GetCitiesAsync();
+			//BLEND HERE IT IS ONE IMPLEMENTATION FOR _Current User and jwt schema 
+			var abc = _currentUser.UserId;
+
+            var result = await _cityService.GetCitiesAsync();
 			return result;
 		}
 
