@@ -1,4 +1,4 @@
-﻿
+﻿@model PulseDonor.MVC.User.Commands.AddUserCommand
 <div class="card card-custom">
     <div class="card-header">
         <h3 class="card-title">
@@ -12,7 +12,7 @@
         </div>
     </div>
     <!--begin::Form-->
-    <form>
+    <form asp-controller="User" asp-action="Add">
         <div class="card-body">
             <div class="row justify-content-center mb-4">
                 <div class="image-input image-input-outline" id="kt_image_1">
@@ -33,14 +33,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Emri <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" placeholder="Emri" />
+                        <input type="text" class="form-control" placeholder="Emri" asp-for="FirstName" />
                         <span class="form-text text-muted">We'll never share your email with anyone else.</span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Mbiemri <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" placeholder="Mbiemri" />
+                        <input type="text" class="form-control" placeholder="Mbiemri" asp-for="LastName" />
                         <span class="form-text text-muted">We'll never share your email with anyone else.</span>
                     </div>
                 </div>
@@ -49,14 +49,14 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label>Email address <span class="text-danger">*</span></label>
-                        <input type="email" class="form-control" placeholder="Email" />
+                        <input type="email" class="form-control" placeholder="Email" asp-for="Email" />
                         <span class="form-text text-muted">We'll never share your email with anyone else.</span>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password <span class="text-danger">*</span></label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" />
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password" asp-for="Password" />
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
         </div>
         <div class="card-footer" style="display:flex; justify-content:end; flex-direction:row">
             <button type="reset" class="btn btn-secondary mr-2">Anulo</button>
-            <button type="reset" class="btn btn-primary">Shto</button>
+            <button type="submit" class="btn btn-primary">Shto</button>
         </div>
     </form>
     <!--end::Form-->
@@ -103,5 +103,13 @@
     <script>
         var avatar1 = new KTImageInput('kt_image_1');
     </script>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+
+
 }
 

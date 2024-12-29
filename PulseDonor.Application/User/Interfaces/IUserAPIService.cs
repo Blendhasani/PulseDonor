@@ -1,4 +1,5 @@
 ﻿using PulseDonor.Application.City.DTO;
+using PulseDonor.Application.User.Commands;
 using PulseDonor.Application.User.DTO;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,6 @@ namespace PulseDonor.Application.User.Interfaces
 	public interface IUserAPIService
 	{
 		Task<List<UsersAPIDto>> GetUsersAsync();
-
+		Task<string> AddUserAsync(AddUserAPICommand command);
 	}
 }

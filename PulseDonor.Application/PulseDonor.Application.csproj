@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Authentication\Query\" />
-    <Folder Include="User\Commands\" />
   </ItemGroup>
 
   <ItemGroup>

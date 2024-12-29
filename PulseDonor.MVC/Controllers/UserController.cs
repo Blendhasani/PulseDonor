@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PulseDonor.MVC.User.Commands;
 using PulseDonor.MVC.User.Interfaces;
 
 namespace PulseDonor.MVC.Controllers
@@ -26,6 +27,18 @@ namespace PulseDonor.MVC.Controllers
 		public IActionResult Add()
 		{
 			return View();
+		}
+		[HttpPost]
+		public async Task<IActionResult> Add([FromForm] AddUserCommand model)
+		{
+			if (!ModelState.IsValid)
+			{
+				return View(model);
+			}
+
+			var result = await _userService.AddUser(model);
+
+			return RedirectToAction("Index");
 		}
 		public IActionResult Edit()
 		{

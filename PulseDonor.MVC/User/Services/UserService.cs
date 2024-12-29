@@ -1,4 +1,6 @@
-﻿using PulseDonor.MVC.Helper.Interfaces;
+﻿using PulseDonor.MVC.City.Commands;
+using PulseDonor.MVC.Helper.Interfaces;
+using PulseDonor.MVC.User.Commands;
 using PulseDonor.MVC.User.DTO;
 using PulseDonor.MVC.User.Interfaces;
 
@@ -11,6 +13,12 @@ namespace PulseDonor.MVC.User.Services
 		public UserService(IApiClientHelper apiClientHelper)
 		{
 			_apiClientHelper = apiClientHelper;
+		}
+
+		public async Task<string> AddUser(AddUserCommand cmd)
+		{
+			string url = "https://localhost:7269/api/User/Add";
+			return await _apiClientHelper.PostAsync<AddUserCommand, string>(url, cmd);
 		}
 
 		public async Task<List<UsersDto>> GetUsers()

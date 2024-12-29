@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PulseDonor.Application.City.Commands;
+using PulseDonor.Application.User.Commands;
 using PulseDonor.Application.User.DTO;
 using PulseDonor.Application.User.Interfaces;
 
@@ -19,6 +21,13 @@ namespace PulseDonor.API.Controllers
 		public async Task<List<UsersAPIDto>> GetUsers()
 		{
 			var result = await _userService.GetUsersAsync();
+			return result;
+		}
+
+		[HttpPost("Add")]
+		public async Task<string> AddUser([FromBody] AddUserAPICommand entity)
+		{
+			var result = await _userService.AddUserAsync(entity);
 			return result;
 		}
 	}

@@ -55,10 +55,10 @@ namespace PulseDonor.Application.Authentication.Services
 
         public async Task<string> LoginAsync(LoginCommand command)
         {
-            var dto = command.LoginDto;
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == dto.Email);
+           
+            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == command.Email);
 
-            if (user == null || !_passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, dto.Password).Equals(PasswordVerificationResult.Success))
+            if (user == null || !_passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, command.Password).Equals(PasswordVerificationResult.Success))
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }

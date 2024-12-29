@@ -2,6 +2,7 @@
 {
     public interface IApiClientHelper
     {
+        Task<TResult> LoginAsync<TRequest, TResult>(string url, TRequest request);
         Task<TResult> PostAsync<TRequest, TResult>(string url, TRequest request);
         Task<TResult> PutAsync<TRequest, TResult>(string url, TRequest request);
         Task<TResult> GetAsync<TResult>(string url);

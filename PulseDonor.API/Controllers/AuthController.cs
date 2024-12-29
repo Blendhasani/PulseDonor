@@ -26,15 +26,19 @@ namespace PulseDonor.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginCommand command)
         {
-            try
-            {
-                var result = await _userService.LoginAsync(command);
-                return Ok(result);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
-        }
+			try
+			{
+				var result = await _userService.LoginAsync(command);
+				return Ok(result); // Ensure it's wrapped in a valid JSON object
+			}
+			catch (UnauthorizedAccessException ex)
+			{
+				return Unauthorized(new { Error = ex.Message });
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, new { Error = "An internal server error occurred.", Details = ex.Message });
+			}
+		}
     }
 }

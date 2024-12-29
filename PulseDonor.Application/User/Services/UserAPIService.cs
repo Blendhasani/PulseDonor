@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using PulseDonor.Application.User.Commands;
 
 
 namespace PulseDonor.Application.User.Services
@@ -18,10 +19,34 @@ namespace PulseDonor.Application.User.Services
 		private readonly DevPulsedonorContext _context;
 		private readonly UserManager<PulseDonor.Infrastructure.Models.User> _userManager;
 
+
 		public UserAPIService(DevPulsedonorContext context, UserManager<PulseDonor.Infrastructure.Models.User> userManager)
 		{
 			_context = context;
 			_userManager = userManager;
+		}
+
+		public async Task<string> AddUserAsync(AddUserAPICommand command)
+		{
+			var user = new PulseDonor.Infrastructure.Models.User()
+			{
+				FirstName = command.FirstName,
+				LastName = command.LastName,
+				Email = command.Email,
+				ImagePath = null,
+				UserName = "bldmc",
+				EmailConfirmed = true,
+				InsertedDate = DateTime.UtcNow
+			};
+
+			var result = await _userManager.CreateAsync(user, "Inno@2024");
+			if (!result.Succeeded)
+			{
+				return "Request Failed";
+			}
+
+			await _userManager.AddToRoleAsync(user, "Admin");
+			return user.Id;
 		}
 
 		public async Task<List<UsersAPIDto>> GetUsersAsync()
