@@ -17,7 +17,7 @@ namespace PulseDonor.MVC.Controllers
 		{
 			return View();
 		}
-
+		[HttpGet]
 		public async Task<IActionResult> GetCities()
 		{
 			var result = await _cityService.GetCities();

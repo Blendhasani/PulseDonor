@@ -17,6 +17,8 @@ using PulseDonor.Application.User.Services;
 using PulseDonor.Application.CurrentUser.Interface;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PulseDonor.Application.User.Commands;
+using PulseDonor.Infrastructure.Authentication.Database.Models;
+using PulseDonor.Infrastructure.Authentication.Database;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,13 +26,33 @@ builder.Services.AddControllers();
 
 builder.Services.AddDbContext<DevPulsedonorContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDataProtection();
 
 // Configure Identity
-builder.Services.AddIdentityCore<User>()
-    .AddEntityFrameworkStores<DevPulsedonorContext>()
-    .AddDefaultTokenProviders();
+//builder.Services.AddIdentityCore<ApplicationUser>()
+//    .AddEntityFrameworkStores<DevPulsedonorContext>()
+//    .AddDefaultTokenProviders();
+
+builder.Services.AddIdentityCore<ApplicationUser>();
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+{
+	//TODO password requirements to fit your needs
+	options.SignIn.RequireConfirmedAccount = false;
+	//options.Lockout.MaxFailedAccessAttempts = 5;
+	//options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+	options.Password.RequiredLength = 6;
+	options.Password.RequireDigit = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequireUppercase = false;
+	options.Password.RequireNonAlphanumeric = false;
+	options.User.RequireUniqueEmail = true;
+})
+		   .AddRoles<ApplicationRole>()
+		   .AddEntityFrameworkStores<ApplicationDbContext>()
+		   .AddDefaultTokenProviders();
+
 
 
 builder.Services.AddAuthentication(options =>
@@ -104,7 +126,8 @@ builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
-//builder.Services.AddValidatorsFromAssemblyContaining<AddUserAPICommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddUserAPICommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();

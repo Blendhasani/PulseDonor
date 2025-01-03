@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace PulseDonor.Infrastructure.Models;
@@ -11,11 +12,11 @@ public partial class DevPulsedonorContext : DbContext
     }
 
     public DevPulsedonorContext(DbContextOptions<DevPulsedonorContext> options)
-        : base(options)
-    {
-    }
+		 : base(options)
+	{
+	}
 
-    public virtual DbSet<BloodDonationPoint> BloodDonationPoints { get; set; }
+	public virtual DbSet<BloodDonationPoint> BloodDonationPoints { get; set; }
 
     public virtual DbSet<BloodRequest> BloodRequests { get; set; }
 

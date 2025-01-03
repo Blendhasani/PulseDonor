@@ -23,7 +23,7 @@ namespace PulseDonor.MVC.Controllers
 		public async Task<IActionResult> Login(LoginCommand cmd)
 		{
 			var result = await _authService.Login(cmd);
-			return RedirectToAction("Index");
+			return RedirectToAction("Index", "User");
 		}
 	}
 }

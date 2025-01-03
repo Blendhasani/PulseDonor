@@ -27,7 +27,8 @@ builder.Services.AddControllersWithViews()
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<AddCityCommand>();
-//builder.Services.AddValidatorsFromAssemblyContaining<AddUserCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddUserCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditUserCommand>();
 
 #if DEBUG
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

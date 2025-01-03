@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using PulseDonor.Application.Authentication.Commands;
+using PulseDonor.Application.Authentication.DTO;
 using PulseDonor.Application.Authentication.Interfaces;
 using PulseDonor.Core;
 using PulseDonor.Infrastructure.Models;
@@ -19,17 +20,24 @@ namespace PulseDonor.Application.Authentication.Services
     public class AuthService : IAuthService
     {
         private readonly DevPulsedonorContext _context;
-        private readonly IPasswordHasher<PulseDonor.Infrastructure.Models.User> _passwordHasher;
-        private readonly IConfiguration _configuration;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly SignInManager<ApplicationUser> _signInManager;
 
-        public AuthService(DevPulsedonorContext context, IPasswordHasher<PulseDonor.Infrastructure.Models.User> passwordHasher, IConfiguration configuration)
-        {
-            _context = context;
-            _passwordHasher = passwordHasher;
-            _configuration = configuration;
-        }
 
-        public async Task<string> SignupAsync(SignupCommand command)
+		//private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
+		private readonly IConfiguration _configuration;
+
+		//public AuthService(DevPulsedonorContext context, IPasswordHasher<ApplicationUser> passwordHasher, IConfiguration configuration)
+		public AuthService(DevPulsedonorContext context, IConfiguration configuration, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+		{
+			_context = context;
+			//_passwordHasher = passwordHasher;
+			_configuration = configuration;
+			_userManager = userManager;
+			_signInManager = signInManager;
+		}
+
+		public async Task<string> SignupAsync(SignupCommand command)
         {
             var dto = command.SignupDto;
             var user = new PulseDonor.Infrastructure.Models.User
@@ -43,8 +51,8 @@ namespace PulseDonor.Application.Authentication.Services
                 //EmailConfirmed = true,
                 BloodTypeId = dto.BloodTypeId,
                 InsertedDate = DateTime.UtcNow,
-                IsActive = true,
-                PasswordHash = _passwordHasher.HashPassword(null!, dto.Password)
+                IsActive = true
+                //PasswordHash = _passwordHasher.HashPassword(null!, dto.Password)
             };
 
             await _context.Users.AddAsync(user);
@@ -55,18 +63,35 @@ namespace PulseDonor.Application.Authentication.Services
 
         public async Task<string> LoginAsync(LoginCommand command)
         {
-           
-            var user = await _context.Users.SingleOrDefaultAsync(u => u.Email == command.Email);
 
-            if (user == null || !_passwordHasher.VerifyHashedPassword(user, user.PasswordHash!, command.Password).Equals(PasswordVerificationResult.Success))
+            try
+            {
+                var test = await _userManager.Users.Where(x => x.Email.Equals(command.Email))
+													 .FirstOrDefaultAsync();
+			}
+			catch(Exception e)
+            {
+
+            }
+
+			var user = await _userManager.Users.Where(x => x.Email.Equals(command.Email))
+													 .FirstOrDefaultAsync();
+			if (user is null)
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
 
-            return GenerateJwtToken(user);
+			var signInResult = await _signInManager.CheckPasswordSignInAsync(user, command.Password, false);
+			if (!signInResult.Succeeded)
+			{
+				throw new UnauthorizedAccessException("Invalid email or password.");
+
+			}
+
+			return GenerateJwtToken(user);
         }
 
-        private string GenerateJwtToken(PulseDonor.Infrastructure.Models.User user)
+        private string GenerateJwtToken(ApplicationUser user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes("QFIHUFQIUWHHIUGY$$##352763256gJDGJGHJAD");
@@ -78,7 +103,7 @@ namespace PulseDonor.Application.Authentication.Services
                 new Claim(ClaimTypes.Name, user.UserName!),
                 new Claim(ClaimTypes.Email, user.Email!)
             }),
-                Expires = DateTime.UtcNow.AddHours(1),
+                Expires = DateTime.UtcNow.AddHours(8),
                 Issuer = "https://localhost:7269",
                 Audience = "https://localhost:7269", 
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

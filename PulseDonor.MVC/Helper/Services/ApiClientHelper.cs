@@ -90,6 +90,14 @@ namespace PulseDonor.MVC.Helper.Services
 		}
 
 
+		public async Task<TResult> GetByStringIdAsync<TResult>(string url, string id)
+		{
+			AttachAuthorizationHeader();
+			var fullUrl = $"{url}?id={id}";
+			var response = await _httpClient.GetAsync(fullUrl);
+			return await DeserializeResponse<TResult>(response);
+		}
+
 		public async Task<TResult> DeleteAsync<TResult>(string url)
 		{
 			AttachAuthorizationHeader();
@@ -119,17 +127,62 @@ namespace PulseDonor.MVC.Helper.Services
 				throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {json}");
 			}
 
+			//try
+			//{
+			//	var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+			//	if (deserialized == null)
+			//	{
+			//		// Handle the null case:
+			//		// For example, return a default value or throw a different exception
+			//		Console.WriteLine("Warning: Deserialized object is null.");
+			//		return default!; // or throw new SomeCustomException("Null content");
+			//	}
+
+			//	return deserialized;
+			//}
+			//catch (JsonException ex)
+			//{
+			//	Console.WriteLine($"Deserialization Error: {ex.Message}");
+			//	throw;
+			//}
+
 			try
 			{
-				return JsonSerializer.Deserialize<TResult>(json, _jsonOptions)
-					   ?? throw new JsonException("Failed to deserialize response.");
+				// Try normal JSON deserialization
+				var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+				if (deserialized != null)
+					return deserialized;
+
+				// If it's null, try fallback logic
+				return TryHandleFallback<TResult>(json);
 			}
-			catch (JsonException ex)
+			catch (JsonException)
 			{
-				Console.WriteLine($"Deserialization Error: {ex.Message}");
-				throw;
+				// If we get a JSON exception, try fallback logic
+				return TryHandleFallback<TResult>(json);
 			}
+
 		}
+
+		private TResult TryHandleFallback<TResult>(string rawValue)
+		{
+			if (typeof(TResult) == typeof(string))
+			{
+				return (TResult)(object)rawValue;
+			}
+
+			if (typeof(TResult) == typeof(Guid))
+			{
+				return (TResult)(object)Guid.Parse(rawValue);
+			}
+
+			if (typeof(TResult) == typeof(int))
+			{
+				return (TResult)(object)int.Parse(rawValue);
+			}
+			return default!;
+		}
+
 
 
 

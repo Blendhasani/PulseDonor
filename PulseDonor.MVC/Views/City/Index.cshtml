@@ -193,14 +193,14 @@ function deleteCity(id) {
     $(document).ready(function () {
 
 
-
+        debugger
 
         $('#kt_datatable').KTDatatable({
             data: {
                 type: 'remote',
                 source: {
                     read: {
-                        url: 'City/GetCities', // Your data endpoint
+                        url: 'GetCities', // Your data endpoint
                         method: 'GET'
                         // You can also set headers, data, etc. if needed
                     }

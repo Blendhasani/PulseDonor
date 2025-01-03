@@ -38,5 +38,29 @@ namespace PulseDonor.MVC.User.Services
 			}).ToList();
 
 		}
+
+		public async Task<EditUserCommand> GetUserById(string id)
+		{
+			string url = "https://localhost:7269/api/User/Get";
+
+			var data = await _apiClientHelper.GetByStringIdAsync<EditUserCommand>(url, id);
+
+			var singleCity = new EditUserCommand
+			{
+				Id = data.Id,
+				FirstName = data.FirstName,
+				LastName = data.LastName,
+				Email = data.Email
+			};
+
+			return singleCity;
+
+		}
+
+		public async Task<string> EditUser(EditUserCommand cmd)
+		{
+			string url = "https://localhost:7269/api/User/Edit";
+			return await _apiClientHelper.PutAsync<EditUserCommand, string>(url, cmd);
+		}
 	}
 }
