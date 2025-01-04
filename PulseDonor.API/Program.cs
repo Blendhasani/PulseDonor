@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using PulseDonor.Application.User.Commands;
 using PulseDonor.Infrastructure.Authentication.Database.Models;
 using PulseDonor.Infrastructure.Authentication.Database;
+using PulseDonor.Application.Data.Interfaces;
+using PulseDonor.Application.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -132,6 +134,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 builder.Services.AddScoped<IUserAPIService, UserAPIService>();
+builder.Services.AddScoped<IDataAPIService, DataAPIService>();
 
 var app = builder.Build();
 
