@@ -61,7 +61,36 @@ namespace PulseDonor.MVC.Controllers
 			return RedirectToAction("Index");
 		}
 
+		[HttpPost]
+		public async Task<IActionResult> UpdateIsBlocked(string userId, bool isBlocked)
+		{
+			var command = new UpdateIsBlockedUserCommand
+			{
+				UserId = userId,
+				IsBlocked = isBlocked
+			};
+			var result = await _userService.UpdateIsBlocked(command);
+			return RedirectToAction("Index");
 
+			//try
+			//{
+			//	// 1) Use userId to fetch the user from the database
+			//	// 2) Update the isBlocked status
+			//	// 3) Save changes, e.g., _dbContext.SaveChanges();
 
+			//	return Json(new { success = true, message = "Status updated successfully." });
+			//}
+			//catch (Exception ex)
+			//{
+			//	// Log exception
+			//	return Json(new { success = false, error = ex.Message });
+			//}
+		}
+
+		public async Task<IActionResult>ProfileComponent()
+		{
+			var result = await _userService.GetProfileComponent();
+			return PartialView("_ProfilePartial", result);
+		}
 	}
 }

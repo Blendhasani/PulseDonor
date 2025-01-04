@@ -87,20 +87,24 @@ License: You must have a valid license purchased only from themeforest(the above
                             <div class="form-group">
                                 <label class="font-size-h6 font-weight-bolder text-dark">Email</label>
                                 <input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="text" asp-for="Email" autocomplete="off" />
+                                <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
                             <!--end::Form group-->
                             <!--begin::Form group-->
                             <div class="form-group">
                                 <div class="d-flex justify-content-between mt-n5">
                                     <label class="font-size-h6 font-weight-bolder text-dark pt-5">Password</label>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
 
-                                    <a href="javascript:;" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5" id="kt_login_forgot">
-                                        Keni harruar ?
-                                    </a>
+
                                 </div>
 
                                 <input class="form-control form-control-solid h-auto py-7 px-6 rounded-lg" type="password" asp-for="Password" autocomplete="off" />
+                                <a href="javascript:;" style="display:flex;flex-direction:row;justify-content:end;" class="text-primary font-size-h6 font-weight-bolder text-hover-primary pt-5" id="kt_login_forgot">
+                                    Keni harruar ?
+                                </a>
                             </div>
+
                             <!--end::Form group-->
                             <!--begin::Action-->
                             <div class="pb-lg-0 pb-5">

@@ -1,5 +1,6 @@
 ﻿using PulseDonor.MVC.Auth.Commands;
 using PulseDonor.MVC.Auth.Interfaces;
+using PulseDonor.MVC.City.Commands;
 using PulseDonor.MVC.Helper.Interfaces;
 
 namespace PulseDonor.MVC.Auth.Services
@@ -23,6 +24,12 @@ namespace PulseDonor.MVC.Auth.Services
 			}
 
 			return false;
+		}
+
+		public async Task<bool> Logout()
+		{
+			string url = "https://localhost:7269/api/Auth/logout";
+			return await _apiClientHelper.PostAsync<bool>(url);
 		}
 	}
 }

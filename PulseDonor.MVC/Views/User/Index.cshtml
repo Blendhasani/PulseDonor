@@ -177,7 +177,7 @@
     }
 
     $(document).ready(function () {
-        $('#kt_datatable').KTDatatable({
+        var datatable = $('#kt_datatable').KTDatatable({
             data: {
                 type: 'remote',
                 source: {
@@ -189,15 +189,26 @@
                 }
             },
             layout: {
-                scroll: false,
+                scroll: true,
                 height: 500,
                 footer: false,
                 responsive: false // set as needed
             },
             sortable: true,
-            pagination: false,
+            pagination: true,
             columns: [
-                { field: 'fullname', title: 'Emri', autoHide: false, width: 100 },
+                {
+                    field: 'fullname',
+                    title: 'Emri',
+                    autoHide: false,
+                    width: 200,
+                    template: function (row) {
+                        return `
+            <div>${row.fullname}</div><br>
+            <div style="font-size:12px;">${row.email}</div>
+        `;
+                    }
+                },
                 { field: 'gender', title: 'Gjinia', autoHide: false, width: 100 },
                 {
                     field: 'age',
@@ -211,6 +222,30 @@
                 },
                 { field: 'bloodType', title: 'Grupi Gjakut', autoHide: false, width: 100 },
                 { field: 'role', title: 'Roli', autoHide: false, width: 100 },
+                {
+                    field: 'isBlocked',
+                    title: 'Është i bllokuar',
+                    autoHide: false,
+                    width: 100,
+                    template: function (row) {
+                        const checkedAttribute = row.isBlocked ? 'checked="checked"' : '';
+                        return `
+                        <div class="col-3">
+                            <span class="switch switch-outline switch-icon switch-success">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        ${checkedAttribute}
+                                        name="select"
+                                        data-user-id="${row.id}"
+                                    />
+                                    <span></span>
+                                </label>
+                            </span>
+                        </div>
+                    `;
+                    }
+                },
                 {
                     field: 'insertedDate',
                     title: 'Data Regjistrimit',
@@ -265,6 +300,45 @@
 
             ]
         });
+
+        datatable.on('datatable-on-layout-updated', function () {
+            attachSwitchHandlers();
+        });
+
+        datatable.on('datatable-on-init', function () {
+            attachSwitchHandlers();
+        });
+
+
+        // The function that attaches the 'change' event to all relevant checkboxes
+        function attachSwitchHandlers() {
+            // Remove old handlers to avoid double-binding
+            $('input[name="select"]').off('change');
+
+            // Attach the new handler
+            $('input[name="select"]').on('change', function () {
+                var userId = $(this).data('user-id');
+                var isBlocked = $(this).is(':checked'); // true if checked, false otherwise
+
+                // Make AJAX POST to your controller
+                $.ajax({
+                    url: '/User/UpdateIsBlocked',  // or your desired endpoint
+                    type: 'POST',
+                    data: {
+                        userId: userId,
+                        isBlocked: isBlocked
+                    },
+                    success: function (response) {
+                        // You can show a toast or update the UI accordingly
+                        console.log('Updated userId=' + userId + ' to isBlocked=' + isBlocked);
+                    },
+                    error: function (xhr) {
+                        console.error('Error updating user: ', xhr);
+                        alert('Failed to update user. Check console for details.');
+                    }
+                });
+            });
+        }
     });
 
 

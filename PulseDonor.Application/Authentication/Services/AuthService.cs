@@ -64,15 +64,6 @@ namespace PulseDonor.Application.Authentication.Services
         public async Task<string> LoginAsync(LoginCommand command)
         {
 
-            try
-            {
-                var test = await _userManager.Users.Where(x => x.Email.Equals(command.Email))
-													 .FirstOrDefaultAsync();
-			}
-			catch(Exception e)
-            {
-
-            }
 
 			var user = await _userManager.Users.Where(x => x.Email.Equals(command.Email))
 													 .FirstOrDefaultAsync();
@@ -80,6 +71,11 @@ namespace PulseDonor.Application.Authentication.Services
             {
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
+
+            if(user.IsBlocked == true)
+            {
+				throw new UnauthorizedAccessException("You are blocked.");
+			}
 
 			var signInResult = await _signInManager.CheckPasswordSignInAsync(user, command.Password, false);
 			if (!signInResult.Succeeded)
@@ -112,5 +108,11 @@ namespace PulseDonor.Application.Authentication.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-    }
+
+		public async Task<bool> LogoutAsync()
+		{
+			await _signInManager.SignOutAsync();
+            return true;
+		}
+	}
 }

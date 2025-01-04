@@ -30,10 +30,12 @@ namespace PulseDonor.MVC.User.Services
 			{
 				Id = x.Id,
 				Fullname = x.Fullname,
+				Email = x.Email,
 				Gender = x.Gender,
 				Age = x.Age,
 				BloodType = x.BloodType,
 				Role = x.Role,
+				IsBlocked = x.IsBlocked,
 				InsertedDate = x.InsertedDate
 			}).ToList();
 
@@ -61,6 +63,26 @@ namespace PulseDonor.MVC.User.Services
 		{
 			string url = "https://localhost:7269/api/User/Edit";
 			return await _apiClientHelper.PutAsync<EditUserCommand, string>(url, cmd);
+		}
+
+		public async Task<string> UpdateIsBlocked(UpdateIsBlockedUserCommand cmd)
+		{
+			string url = "https://localhost:7269/api/User/UpdateIsBlocked";
+			return await _apiClientHelper.PutAsync<UpdateIsBlockedUserCommand, string>(url, cmd);
+
+		}
+
+		public async Task<ProfileComponentDto> GetProfileComponent()
+		{
+			string url = "https://localhost:7269/api/User/ProfileComponent";
+			var data = await _apiClientHelper.GetAsync<ProfileComponentDto>(url);
+
+			return new ProfileComponentDto
+			{
+				Fullname = data.Fullname,
+				Email = data.Email,
+				Role = data.Role
+			};
 		}
 	}
 }

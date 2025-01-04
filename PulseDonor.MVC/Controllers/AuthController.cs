@@ -15,8 +15,11 @@ namespace PulseDonor.MVC.Controllers
 
 		public IActionResult Login()
 		{
-
-			return View(new LoginCommand());
+			if (!User.Identity.IsAuthenticated)
+			{
+				return View(new LoginCommand());
+			}
+			return View("~/Views/User/Index.cshtml");
 		}
 
 		[HttpPost]
@@ -25,5 +28,14 @@ namespace PulseDonor.MVC.Controllers
 			var result = await _authService.Login(cmd);
 			return RedirectToAction("Index", "User");
 		}
+
+		[HttpPost]
+		public async Task<IActionResult> Logout()
+		{
+			var result = await _authService.Logout();
+			return RedirectToAction("Login", "Auth");
+
+		}
+
 	}
 }

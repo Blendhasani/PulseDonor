@@ -13,9 +13,11 @@ namespace PulseDonor.Application.User.Interfaces
 	public interface IUserAPIService
 	{
 		Task<List<UsersAPIDto>> GetUsersAsync();
-		Task<string> AddUserAsync(AddUserAPICommand command);
+		Task<string> AddUserAsync(AddUserAPICommand cmd);
 		Task<SingleUserAPIDto> GetUserByIdAsync(string id);
 		Task<int> EditUserAsync(EditUserAPICommand cmd);
+		Task<string> UpdateIsBlockedAsync(UpdateIsBlockedUserAPICommand cmd);
+		Task<ProfileComponentAPIDto> GetProfileComponentAsync();
 
 	}
 }

@@ -44,5 +44,19 @@ namespace PulseDonor.API.Controllers
 			return result;
 		}
 
+		[HttpPut("UpdateIsBlocked")]
+		public async Task<string> UpdateIsBlocked(UpdateIsBlockedUserAPICommand entity)
+		{
+			var result = await _userService.UpdateIsBlockedAsync(entity);
+			return result;
+		}
+
+
+		[HttpGet("ProfileComponent")]
+		public async Task<ProfileComponentAPIDto> GetProfileComponent()
+		{
+			var result = await _userService.GetProfileComponentAsync();
+			return result;
+		}
 	}
 }

@@ -10,6 +10,7 @@ using PulseDonor.MVC.User.Services;
 using PulseDonor.MVC.Auth.Interfaces;
 using PulseDonor.MVC.Auth.Services;
 using PulseDonor.MVC.User.Commands;
+using PulseDonor.MVC.Auth.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +30,7 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<AddCityCommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<AddUserCommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditUserCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginCommand>();
 
 #if DEBUG
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation();

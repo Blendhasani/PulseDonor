@@ -65,6 +65,12 @@ namespace PulseDonor.MVC.Helper.Services
 			var response = await _httpClient.PostAsync(url, content);
 			return await DeserializeResponse<TResult>(response);
 		}
+		public async Task<TResult> PostAsync<TResult>(string url)
+		{
+			AttachAuthorizationHeader();
+			var response = await _httpClient.PostAsync(url, null);
+			return await DeserializeResponse<TResult>(response);
+		}
 
 		public async Task<TResult> PutAsync<TRequest, TResult>(string url, TRequest request)
 		{
@@ -179,6 +185,22 @@ namespace PulseDonor.MVC.Helper.Services
 			if (typeof(TResult) == typeof(int))
 			{
 				return (TResult)(object)int.Parse(rawValue);
+			}
+
+			if (typeof(TResult) == typeof(bool))
+			{
+				// If the server gave bare `true/false`, we wouldn't be here (that’s valid JSON).
+				// But if it’s "true"/"false" with quotes, parse that:
+				if ("\"true\"".Equals(rawValue, StringComparison.OrdinalIgnoreCase) ||
+					"true".Equals(rawValue, StringComparison.OrdinalIgnoreCase))
+				{
+					return (TResult)(object)true;
+				}
+				if ("\"false\"".Equals(rawValue, StringComparison.OrdinalIgnoreCase) ||
+					"false".Equals(rawValue, StringComparison.OrdinalIgnoreCase))
+				{
+					return (TResult)(object)false;
+				}
 			}
 			return default!;
 		}

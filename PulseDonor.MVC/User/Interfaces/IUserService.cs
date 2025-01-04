@@ -10,6 +10,8 @@ namespace PulseDonor.MVC.User.Interfaces
 		Task<string> AddUser(AddUserCommand cmd);
 		Task<EditUserCommand> GetUserById(string id);
 		Task<string> EditUser(EditUserCommand cmd);
+		Task<string> UpdateIsBlocked(UpdateIsBlockedUserCommand cmd);
+		Task<ProfileComponentDto> GetProfileComponent();
 
 
 	}

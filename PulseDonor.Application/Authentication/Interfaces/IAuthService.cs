@@ -11,5 +11,7 @@ namespace PulseDonor.Application.Authentication.Interfaces
     {
         Task<string> SignupAsync(SignupCommand command);
         Task<string> LoginAsync(LoginCommand command);
-    }
+        Task<bool> LogoutAsync();
+
+	}
 }

@@ -5,5 +5,6 @@ namespace PulseDonor.MVC.Auth.Interfaces
 	public interface IAuthService
 	{
 		Task<bool> Login(LoginCommand cmd);
+		Task<bool> Logout();
 	}
 }

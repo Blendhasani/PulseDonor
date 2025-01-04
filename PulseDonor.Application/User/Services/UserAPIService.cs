@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Identity;
 using PulseDonor.Application.User.Commands;
 using System.Security.Cryptography;
 using PulseDonor.Application.City.Commands;
+using PulseDonor.Application.CurrentUser.Interface;
 
 
 namespace PulseDonor.Application.User.Services
@@ -20,30 +21,32 @@ namespace PulseDonor.Application.User.Services
 	{
 		private readonly DevPulsedonorContext _context;
 		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly ICurrentUser _currentUser;
 
 
-		public UserAPIService(DevPulsedonorContext context, UserManager<ApplicationUser> userManager)
+		public UserAPIService(DevPulsedonorContext context, UserManager<ApplicationUser> userManager, ICurrentUser currentUser)
 		{
 			_context = context;
 			_userManager = userManager;
+			_currentUser = currentUser;
 		}
 
-		public async Task<string> AddUserAsync(AddUserAPICommand command)
+		public async Task<string> AddUserAsync(AddUserAPICommand cmd)
 		{
 			var user = new ApplicationUser()
 			{
-				FirstName = command.FirstName,
-				LastName = command.LastName,
-				Email = command.Email,
+				FirstName = cmd.FirstName,
+				LastName = cmd.LastName,
+				Email = cmd.Email,
 				ImagePath = null,
-				UserName = command.Email.Trim(),
+				UserName = cmd.Email.Trim(),
 				EmailConfirmed = true,
 				InsertedDate = DateTime.UtcNow,
 				BloodTypeId = 1, //default for admin
 				GenderId = 1, //default for admin
 			};
 
-			var result = await _userManager.CreateAsync(user, command.Password);
+			var result = await _userManager.CreateAsync(user, cmd.Password);
 		
 			if (!result.Succeeded)
 			{
@@ -84,9 +87,11 @@ namespace PulseDonor.Application.User.Services
 			   {
 				   x.Id,
 				   Fullname = x.FirstName + " " + x.LastName,
+				   Email = x.Email,
 				   Gender = x.Gender.Type,
 				   Birthdate = x.Birthdate,
 				   BloodType = x.BloodType.Type,
+				   IsBlocked = x.IsBlocked,
 				   InsertedDate = x.InsertedDate != null ? x.InsertedDate.Value.ToString("dd/MM/yyyy") : "N/A"
 			   })
 			   .ToListAsync();
@@ -102,10 +107,12 @@ namespace PulseDonor.Application.User.Services
 				{
 					Id = user.Id,
 					Fullname = user.Fullname,
+					Email = user.Email,
 					Gender = user.Gender,
 					Age = user.Birthdate != null ? DateTime.Now.Year - user.Birthdate.Value.Year : null,
 					BloodType = user.BloodType,
 					Role = roles.FirstOrDefault() ?? "No Role",
+					IsBlocked = user.IsBlocked,
 					InsertedDate = user.InsertedDate
 				});
 			}
@@ -133,5 +140,31 @@ namespace PulseDonor.Application.User.Services
 			return result;
 		}
 
+		public async Task<string> UpdateIsBlockedAsync(UpdateIsBlockedUserAPICommand cmd)
+		{
+			if (string.IsNullOrEmpty(cmd.UserId)) return "";
+			var user = await _context.Users
+				.Where(x => x.Id == cmd.UserId)
+				.FirstOrDefaultAsync();
+
+			user.IsBlocked = cmd.IsBlocked;
+			var result = await _context.SaveChangesAsync();
+			return user.Id;
+		}
+
+		public async Task<ProfileComponentAPIDto> GetProfileComponentAsync()
+		{
+			//var user = await _context.Users.Where(x => x.Id == _currentUser.UserId).FirstOrDefaultAsync();
+			var user = await _userManager.FindByEmailAsync(_currentUser.Email);
+			var role = await _userManager.GetRolesAsync(user);
+			var profile = new ProfileComponentAPIDto
+			{
+				Fullname = user.FirstName + " " + user.LastName,
+				Email = user.Email,
+				Role = role.FirstOrDefault()
+
+			};
+			return profile;
+		}
 	}
 }
