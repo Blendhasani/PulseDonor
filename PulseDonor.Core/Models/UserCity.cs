@@ -12,6 +12,7 @@ public partial class UserCity
     public int CityId { get; set; }
 
     public bool IsDeleted { get; set; }
+    public bool IsPrimary { get; set; }
 
     public string InsertedFrom { get; set; } = null!;
 

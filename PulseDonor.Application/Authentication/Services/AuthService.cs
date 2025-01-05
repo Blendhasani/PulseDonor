@@ -84,7 +84,7 @@ namespace PulseDonor.Application.Authentication.Services
 
 			}
 
-			return GenerateJwtToken(user);
+			return "Bearer " + GenerateJwtToken(user);
         }
 
         private string GenerateJwtToken(ApplicationUser user)

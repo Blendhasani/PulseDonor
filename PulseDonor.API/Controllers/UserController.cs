@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PulseDonor.Application.User.Commands;
 using PulseDonor.Application.User.DTO;
 using PulseDonor.Application.User.Interfaces;
@@ -7,6 +8,7 @@ namespace PulseDonor.API.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
+	[Authorize]
 	public class UserController : Controller
 	{
 		private readonly IUserAPIService _userService;

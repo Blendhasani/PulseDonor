@@ -21,6 +21,9 @@ using PulseDonor.Infrastructure.Authentication.Database.Models;
 using PulseDonor.Infrastructure.Authentication.Database;
 using PulseDonor.Application.Data.Interfaces;
 using PulseDonor.Application.Data.Services;
+using PulseDonor.Application.Account.Interfaces;
+using PulseDonor.Application.Account.Services;
+using PulseDonor.Application.Account.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -130,11 +133,13 @@ builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<AddUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditAccountOverviewCommand>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 builder.Services.AddScoped<IUserAPIService, UserAPIService>();
 builder.Services.AddScoped<IDataAPIService, DataAPIService>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 
