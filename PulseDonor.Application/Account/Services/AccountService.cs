@@ -184,6 +184,7 @@ namespace PulseDonor.Application.Account.Services
 				LastName = cmd.LastName,
 				Age = cmd.Age,
 				PostKey = postKey,
+				AuthorId = _currentUser.UserId,
 				InsertedDate = DateTime.UtcNow,
 				InsertedFrom = _currentUser.UserId,
 				IsDeleted = false

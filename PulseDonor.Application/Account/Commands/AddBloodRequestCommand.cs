@@ -15,8 +15,8 @@ namespace PulseDonor.Application.Account.Commands
 		public int HospitalId { get; set; }	
 		public DateOnly? DonationDate { get; set; }	
 		public TimeOnly? DonationTime { get; set; }
-		public string FirstName { get; set; }	
-		public string LastName { get; set; }
+		public string? FirstName { get; set; }	
+		public string? LastName { get; set; }
 		public int? Age { get; set; }
 	}
 
