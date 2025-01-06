@@ -31,5 +31,23 @@ namespace PulseDonor.API.Controllers
 			var result = await _accountService.EditAccountOverviewAsync(cmd);
 			return Ok(result);
 		}
+
+		//posts crud
+
+		[HttpGet("user-profile-blood-requests")]
+		public async Task<IActionResult> GetMyBloodRequests()
+		{
+			var result = await _accountService.GetMyBloodRequestsAsync();
+			return Ok(result);
+		}
+
+		[HttpPost("blood-request")]
+		public async Task<IActionResult> CreateBloodRequestPost(AddBloodRequestCommand cmd)
+		{
+			var result = await _accountService.CreateBloodRequestPostAsync(cmd);
+			return Ok(result);
+		}
+
+		//lista dhurimeve
 	}
 }
