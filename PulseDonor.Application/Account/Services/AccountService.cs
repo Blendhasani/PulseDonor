@@ -23,9 +23,34 @@ namespace PulseDonor.Application.Account.Services
 			_currentUser = currentUser;
 		}
 
+		
+
+
+
+		public async Task<SingleAccountOverviewDto> GetAccountOverviewAsync()
+		{
+			var user = await _context.Users
+				.Include(x=>x.BloodType)
+				.Include(x=>x.UserCities)
+					.ThenInclude(x=>x.City)
+				.Where(x => x.Id == _currentUser.UserId)
+				.FirstOrDefaultAsync();
+
+			var data = new SingleAccountOverviewDto
+			{
+				FirstName = user.FirstName,
+				LastName = user.LastName,
+				BloodType = new SingleBloodTypeDto { BloodTypeId = user.BloodTypeId, Type = user.BloodType.Type },
+				PrimaryCity = user.UserCities.Where(x => x.IsPrimary && !x.IsDeleted).Select(x => new SinglePrimaryCityDto { PrimaryCityId = x.CityId, Name = x.City.Name }).FirstOrDefault(),
+				SecondaryCities = user.UserCities.Where(x => !x.IsPrimary && !x.IsDeleted).Any()? 
+				user.UserCities.Where(x => !x.IsPrimary && !x.IsDeleted).Select(x => new SingleSecondaryCityDto { SecondaryCityId = x.CityId, Name = x.City.Name }).ToList() : new List<SingleSecondaryCityDto>(),
+				Status = user.IsActive,
+			};
+
+			return data;
+		}
 		public async Task<string> EditAccountOverviewAsync(EditAccountOverviewCommand cmd)
 		{
-			// Fetch user with related entities
 			var user = await _context.Users
 				.Include(x => x.BloodType)
 				.Include(x => x.UserCities)
@@ -107,28 +132,81 @@ namespace PulseDonor.Application.Account.Services
 		}
 
 
-
-		public async Task<SingleAccountOverviewDto> GetAccountOverviewAsync()
+		public async Task<List<GetUserProfileBloodRequestsDto>> GetMyBloodRequestsAsync()
 		{
-			var user = await _context.Users
-				.Include(x=>x.BloodType)
-				.Include(x=>x.UserCities)
-					.ThenInclude(x=>x.City)
-				.Where(x => x.Id == _currentUser.UserId)
-				.FirstOrDefaultAsync();
+			var bloodRequests = _context.BloodRequests
+				.Include(x => x.BloodType)
+				.Include(x => x.UrgenceType)
+				.Include(x=> x.Hospital)
+				.Include(x=>x.BloodRequestApplications)
+				.Where(x=> !x.IsDeleted)
+				.AsQueryable();
 
-			var data = new SingleAccountOverviewDto
+			var response = await bloodRequests.Select(x => new GetUserProfileBloodRequestsDto
 			{
-				FirstName = user.FirstName,
-				LastName = user.LastName,
-				BloodType = new SingleBloodTypeDto { BloodTypeId = user.BloodTypeId, Type = user.BloodType.Type },
-				PrimaryCity = user.UserCities.Where(x => x.IsPrimary && !x.IsDeleted).Select(x => new SinglePrimaryCityDto { PrimaryCityId = x.CityId, Name = x.City.Name }).FirstOrDefault(),
-				SecondaryCities = user.UserCities.Where(x => !x.IsPrimary && !x.IsDeleted).Any()? 
-				user.UserCities.Where(x => !x.IsPrimary && !x.IsDeleted).Select(x => new SingleSecondaryCityDto { SecondaryCityId = x.CityId, Name = x.City.Name }).ToList() : new List<SingleSecondaryCityDto>(),
-				Status = user.IsActive,
+				Id = x.Id,
+				BloodType = x.BloodType.Type,
+				Quantity = x.Quantity,
+				UrgenceType = new SingleUserProfileUrgencyType
+				{
+					Id = x.UrgenceTypeId,
+					Type = x.UrgenceType.Type,
+				},
+				DonationDate = x.DonationDate != null ? x.DonationDate.Value : null,
+				DonationTime = x.DonationTime != null ? x.DonationTime.Value : null,
+				Hospital = x.HospitalId != null ? new SingleUserProfileHospital
+				{
+					Id = x.HospitalId,
+					Name = x.Hospital.Name
+				} : null,
+				NumberOfApplications = x.BloodRequestApplications.Where(y => !y.IsDeleted).Count(),
+
+			}).ToListAsync();
+
+			return response;
+
+		}
+
+		public async Task<int> CreateBloodRequestPostAsync(AddBloodRequestCommand cmd)
+		{
+			var currentUser = await _context.Users.Where(x => x.Id == _currentUser.UserId).FirstOrDefaultAsync();
+			var postKey = GeneratePostId(currentUser.FirstName, currentUser.LastName);
+
+			var newBloodRequest = new BloodRequest
+			{
+				BloodTypeId = cmd.BloodTypeId,
+				Quantity = cmd.Quantity,
+				UrgenceTypeId = cmd.UrgenceTypeId,
+				HospitalId = cmd.HospitalId,
+				DonationDate = cmd.DonationDate,
+				DonationTime = cmd.DonationTime,
+				FirstName = cmd.FirstName,
+				LastName = cmd.LastName,
+				Age = cmd.Age,
+				PostKey = postKey,
+				InsertedDate = DateTime.UtcNow,
+				InsertedFrom = _currentUser.UserId,
+				IsDeleted = false
 			};
 
-			return data;
+			await _context.BloodRequests.AddAsync(newBloodRequest);	
+			await _context.SaveChangesAsync();
+			return newBloodRequest.Id;
+
+
+		}
+
+		private string GeneratePostId(string firstName, string lastName)
+		{
+			//Initials from first and last name
+			var initials = $"{firstName[0]}{lastName[0]}".ToUpper();
+
+			//4 random digits + 2 random letters
+			var random = new Random();
+			var digits = random.Next(1000, 9999); 
+			var letters = Path.GetRandomFileName().ToUpper().Substring(0, 2); // 2 random letters
+
+			return $"{initials}-{digits}{letters}";
 		}
 	}
 }
