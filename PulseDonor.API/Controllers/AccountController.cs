@@ -12,7 +12,7 @@ namespace PulseDonor.API.Controllers
 
 	public class AccountController : ControllerBase
 	{
-        private readonly IAccountService _accountService;
+		private readonly IAccountService _accountService;
 		public AccountController(IAccountService accountService)
 		{
 			_accountService = accountService;
@@ -47,6 +47,28 @@ namespace PulseDonor.API.Controllers
 			var result = await _accountService.CreateBloodRequestPostAsync(cmd);
 			return Ok(result);
 		}
+
+		[HttpGet("blood-request-by-id")]
+		public async Task<IActionResult> GetBloodRequestById(int id)
+		{
+			var result = await _accountService.GetBloodRequestByIdAsync(id);
+			return Ok(result);
+		}
+
+		[HttpPut("blood-request/{id}")]
+		public async Task<IActionResult> EditBloodRequestPost([FromRoute] int id, [FromBody] EditBloodRequestCommand cmd)
+		{
+			var result = await _accountService.EditBloodRequestPostAsync(id, cmd);
+			return Ok(result);
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteBloodRequestPost([FromRoute] int id)
+		{
+			var result = await _accountService.DeleteBloodRequestPostAsync(id);
+			return Ok(result);
+		}
+
 
 		//lista dhurimeve
 	}

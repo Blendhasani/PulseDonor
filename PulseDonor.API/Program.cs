@@ -134,6 +134,8 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<AddUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditAccountOverviewCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddBloodRequestCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditBloodRequestCommand>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();

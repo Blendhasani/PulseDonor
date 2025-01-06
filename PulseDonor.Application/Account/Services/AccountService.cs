@@ -209,5 +209,107 @@ namespace PulseDonor.Application.Account.Services
 
 			return $"{initials}-{digits}{letters}";
 		}
+
+		public async Task<SingleBloodRequestDto> GetBloodRequestByIdAsync(int id)
+		{
+			if(id == 0)
+			{
+				return new SingleBloodRequestDto();
+			}
+
+			var bloodRequest = _context.BloodRequests
+				.Include(x => x.BloodType)
+				.Include(x => x.UrgenceType)
+				.Include(x => x.Hospital)
+				.Include(x => x.BloodRequestApplications)
+				.Where(x => !x.IsDeleted)
+				.AsQueryable();
+
+			if (bloodRequest is null)
+			{
+				return new SingleBloodRequestDto();
+			}
+
+			var response = await bloodRequest.Select(x => new SingleBloodRequestDto
+			{
+				Id = x.Id,
+				BloodType = new SingleBRBloodTypeDto
+				{
+					BloodTypeId = x.BloodTypeId,
+					Type = x.BloodType.Type
+				},
+				Quantity = x.Quantity,
+				UrgenceType = new SingleBRUrgenceDto
+				{
+					UrgenceTypeId = x.UrgenceTypeId,
+					Type = x.UrgenceType.Type
+				},
+				Hospital = x.HospitalId != null ? new SingleBRHospitalDto
+				{
+					HospitalId = x.HospitalId,
+					Name = x.Hospital.Name
+				} : null,
+				DonationDate = x.DonationDate,
+				DonationTime = x.DonationTime,
+				FirstName = x.FirstName,
+				LastName = x.LastName,
+				Age = x.Age
+			}).FirstOrDefaultAsync();
+
+			return response;
+		}
+
+		public async Task<int> EditBloodRequestPostAsync(int id, EditBloodRequestCommand cmd)
+		{
+			if(id == 0)
+			{
+				return 0;
+			}
+
+			var bloodRequest = await _context.BloodRequests
+							.Include(x => x.BloodType)
+							.Include(x => x.UrgenceType)
+							.Include(x => x.Hospital)
+							.Include(x => x.BloodRequestApplications)
+							.Where(x => !x.IsDeleted)
+							.FirstOrDefaultAsync();
+			if (bloodRequest is null)
+			{
+				return 0;
+			}
+
+			bloodRequest.BloodTypeId = cmd.BloodTypeId;
+			bloodRequest.Quantity = cmd.Quantity;
+			bloodRequest.UrgenceTypeId = cmd.UrgenceTypeId;
+			bloodRequest.HospitalId = cmd.HospitalId;
+			bloodRequest.DonationDate = cmd.DonationDate;
+			bloodRequest.DonationTime = cmd.DonationTime;
+			bloodRequest.FirstName = cmd.FirstName;
+			bloodRequest.LastName = cmd.LastName;
+			bloodRequest.Age = cmd.Age;
+
+			await _context.SaveChangesAsync();
+			return bloodRequest.Id;
+		}
+
+		public async Task<string> DeleteBloodRequestPostAsync(int id)
+		{
+			if (id == 0)
+			{
+				return "Kerkesa deshtoi!";
+			}
+
+			var bloodRequest = await _context.BloodRequests.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+			if(bloodRequest is null)
+			{
+				return "Kerkesa deshtoi!";
+			}
+
+			bloodRequest.IsDeleted = true;
+
+			await _context.SaveChangesAsync();
+			return "Kerkesa u realizua!";
+		}
 	}
 }
