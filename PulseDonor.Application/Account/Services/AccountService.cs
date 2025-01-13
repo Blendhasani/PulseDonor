@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using PulseDonor.Application.Account.Commands;
 using PulseDonor.Application.Account.DTO;
 using PulseDonor.Application.Account.Interfaces;
@@ -6,6 +8,7 @@ using PulseDonor.Application.CurrentUser.Interface;
 using PulseDonor.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -139,7 +142,7 @@ namespace PulseDonor.Application.Account.Services
 				.Include(x => x.UrgenceType)
 				.Include(x=> x.Hospital)
 				.Include(x=>x.BloodRequestApplications)
-				.Where(x=> !x.IsDeleted)
+				.Where(x=> !x.IsDeleted && x.AuthorId == _currentUser.UserId)
 				.AsQueryable();
 
 			var response = await bloodRequests.Select(x => new GetUserProfileBloodRequestsDto
@@ -310,6 +313,106 @@ namespace PulseDonor.Application.Account.Services
 
 			await _context.SaveChangesAsync();
 			return "Kerkesa u realizua!";
+		}
+
+		public async Task<List<GetUserProfileApplicationsDto>> GetMyApplicationsAsync()
+		{
+			var bloodRequestsApplications = _context.BloodRequestApplications
+				.Include(x => x.BloodRequest)
+					.ThenInclude(x=>x.UrgenceType)
+				.Include(x => x.BloodRequest)
+					.ThenInclude(x => x.BloodType)
+				.Where(x => x.UserId == _currentUser.UserId)
+				.AsQueryable();
+
+			var response = await bloodRequestsApplications.Select(x => new GetUserProfileApplicationsDto
+			{
+				Id = x.Id,
+				BloodRequestId = x.BloodRequestId,
+				PostKey = x.BloodRequest.PostKey,
+				Quantity = x.BloodRequest.Quantity,
+				Urgence = new SingleApplicationUrgenceDto
+				{
+					UrgenceTypeId = x.BloodRequest.UrgenceTypeId,
+					UrgenceType = x.BloodRequest.UrgenceType.Type
+				},
+				BloodType = new SingleApplicationBloodTypeDto
+				{
+					BloodTypeId = x.BloodRequest.BloodTypeId,
+					BloodType = x.BloodRequest.BloodType.Type
+				},
+				DonationDate = x.BloodRequest.DonationDate,
+				DonationTime = x.BloodRequest.DonationTime,
+				IsAccepted = x.BloodRequest.DonorId == _currentUser.UserId ? true : x.BloodRequest.DonorId == null? null : false
+
+			}).ToListAsync();
+
+			return response;
+		}
+
+		public async Task<SingleUserApplicationDto> GetApplicationByIdAsync(int id)
+		{
+			if (id == 0)
+			{
+				return new SingleUserApplicationDto();
+			}
+
+			var application = _context.BloodRequestApplications
+				.Include(x=>x.BloodRequest)
+				.ThenInclude(x=> x.UrgenceType)
+				.Include(x=>x.BloodRequest)
+				.ThenInclude(x=>x.BloodType)
+				.Where(x=>x.Id == id)
+				.AsQueryable();
+
+			var response = await application.Select(x=> new SingleUserApplicationDto {
+			Id = x.Id,
+			PostKey = x.BloodRequest.PostKey,
+			Quantity = x.BloodRequest.Quantity,
+			Urgence = new SingleApplicationUrgenceType
+			{
+				UrgenceTypeId = x.BloodRequest.UrgenceTypeId,
+				UrgenceType = x.BloodRequest.UrgenceType.Type,
+			},
+			BloodType = new SingleApplicationBloodType
+			{
+				BloodTypeId = x.BloodRequest.BloodTypeId,
+				BloodType = x.BloodRequest.BloodType.Type,
+			},
+			DonationDate = x.BloodRequest.DonationDate,
+			DonationTime = x.BloodRequest.DonationTime,
+			IsAccepted = x.BloodRequest.DonorId == _currentUser.UserId ? true : x.BloodRequest.DonorId == null ? null : false
+
+			}).FirstOrDefaultAsync();
+
+			return response;
+		}
+
+		public async Task<string> DeleteApplicationAsync(int id)
+		{
+			if (id == 0)
+			{
+				return "Kërkesa u deshtoi!";
+			}
+
+			var bloodApplication = await _context.BloodRequestApplications
+				.Include(x=>x.BloodRequest)
+				.Where(x => x.Id == id).FirstOrDefaultAsync();
+
+			if (bloodApplication == null)
+			{
+				return "Nuk u gjet";
+			}
+			
+			if (bloodApplication.BloodRequest != null)
+			{
+				bloodApplication.BloodRequest.DonorId = null;
+			}
+
+			bloodApplication.IsDeleted = true;
+			await _context.SaveChangesAsync();
+			return "Kërkesa u plotësua!";
+
 		}
 	}
 }

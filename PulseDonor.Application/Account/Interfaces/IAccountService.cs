@@ -17,8 +17,9 @@ namespace PulseDonor.Application.Account.Interfaces
 		Task<SingleBloodRequestDto> GetBloodRequestByIdAsync(int id);
 		Task<int> EditBloodRequestPostAsync(int id, EditBloodRequestCommand cmd);
 		Task<string> DeleteBloodRequestPostAsync(int id);
-
-
+		Task<List<GetUserProfileApplicationsDto>> GetMyApplicationsAsync();
+		Task<SingleUserApplicationDto> GetApplicationByIdAsync(int id);
+		Task<string> DeleteApplicationAsync(int id);
 
 
 	}

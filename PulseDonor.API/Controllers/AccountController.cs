@@ -62,14 +62,33 @@ namespace PulseDonor.API.Controllers
 			return Ok(result);
 		}
 
-		[HttpDelete("{id}")]
+		[HttpDelete("blood-request/{id}")]
 		public async Task<IActionResult> DeleteBloodRequestPost([FromRoute] int id)
 		{
 			var result = await _accountService.DeleteBloodRequestPostAsync(id);
 			return Ok(result);
 		}
 
+		[HttpGet("user-profile-applications")]
+		public async Task<IActionResult> GetMyApplications()
+		{
+			var result = await _accountService.GetMyApplicationsAsync();
+			return Ok(result);
+		}
 
-		//lista dhurimeve
+		[HttpGet("application/{id}")]
+		public async Task<IActionResult> GetApplicationById(int id)
+		{
+			var result = await _accountService.GetApplicationByIdAsync(id); 
+			return Ok(result);
+		}
+
+		[HttpDelete("application/{id}")]
+		public async Task<IActionResult> DeleteApplication(int id)
+		{
+			var result = await _accountService.DeleteApplicationAsync(id);
+			return Ok(result);
+		}
+
 	}
 }
