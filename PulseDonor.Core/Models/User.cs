@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace PulseDonor.Infrastructure.Models;
 
-public partial class User { 
+public partial class User
+{
     public string Id { get; set; } = null!;
 
     public int BloodTypeId { get; set; }

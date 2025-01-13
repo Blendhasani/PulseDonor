@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace PulseDonor.Infrastructure.Models;
@@ -12,11 +11,11 @@ public partial class DevPulsedonorContext : DbContext
     }
 
     public DevPulsedonorContext(DbContextOptions<DevPulsedonorContext> options)
-		 : base(options)
-	{
-	}
+        : base(options)
+    {
+    }
 
-	public virtual DbSet<BloodDonationPoint> BloodDonationPoints { get; set; }
+    public virtual DbSet<BloodDonationPoint> BloodDonationPoints { get; set; }
 
     public virtual DbSet<BloodRequest> BloodRequests { get; set; }
 
@@ -77,6 +76,8 @@ public partial class DevPulsedonorContext : DbContext
             entity.Property(e => e.Address).HasMaxLength(256);
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
+            entity.Property(e => e.Latitude).HasMaxLength(50);
+            entity.Property(e => e.Longitude).HasMaxLength(50);
             entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
             entity.Property(e => e.ModifiedFrom).HasMaxLength(128);
         });
@@ -84,6 +85,16 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<BloodRequest>(entity =>
         {
             entity.ToTable("BloodRequest");
+
+            entity.HasIndex(e => e.AuthorId, "IX_BloodRequest_AuthorId");
+
+            entity.HasIndex(e => e.BloodTypeId, "IX_BloodRequest_BloodTypeId");
+
+            entity.HasIndex(e => e.DonorId, "IX_BloodRequest_DonorId");
+
+            entity.HasIndex(e => e.HospitalId, "IX_BloodRequest_HospitalId");
+
+            entity.HasIndex(e => e.UrgenceTypeId, "IX_BloodRequest_UrgenceTypeId");
 
             entity.Property(e => e.AuthorId).HasMaxLength(128);
             entity.Property(e => e.DonorId).HasMaxLength(128);
@@ -123,6 +134,10 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<BloodRequestApplication>(entity =>
         {
             entity.ToTable("BloodRequestApplication");
+
+            entity.HasIndex(e => e.BloodRequestId, "IX_BloodRequestApplication_BloodRequestId");
+
+            entity.HasIndex(e => e.UserId, "IX_BloodRequestApplication_UserId");
 
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
@@ -166,6 +181,8 @@ public partial class DevPulsedonorContext : DbContext
         {
             entity.ToTable("Group");
 
+            entity.HasIndex(e => e.CityId, "IX_Group_CityId");
+
             entity.Property(e => e.Description).HasMaxLength(256);
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
@@ -182,6 +199,10 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<GroupMember>(entity =>
         {
             entity.ToTable("GroupMember");
+
+            entity.HasIndex(e => e.GroupId, "IX_GroupMember_GroupId");
+
+            entity.HasIndex(e => e.MemberId, "IX_GroupMember_MemberId");
 
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
@@ -203,6 +224,10 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<GroupMemberJoinCode>(entity =>
         {
             entity.ToTable("GroupMemberJoinCode");
+
+            entity.HasIndex(e => e.GroupId, "IX_GroupMemberJoinCode_GroupId");
+
+            entity.HasIndex(e => e.MemberId, "IX_GroupMemberJoinCode_MemberId");
 
             entity.Property(e => e.Code).HasMaxLength(50);
             entity.Property(e => e.ExpiracyDate).HasColumnType("datetime");
@@ -227,6 +252,8 @@ public partial class DevPulsedonorContext : DbContext
         {
             entity.ToTable("Hospital");
 
+            entity.HasIndex(e => e.CityId, "IX_Hospital_CityId");
+
             entity.Property(e => e.Address).HasMaxLength(256);
             entity.Property(e => e.Name).HasMaxLength(64);
 
@@ -238,6 +265,10 @@ public partial class DevPulsedonorContext : DbContext
 
         modelBuilder.Entity<Notification>(entity =>
         {
+            entity.HasIndex(e => e.NotificationTypeId, "IX_Notifications_NotificationTypeId");
+
+            entity.HasIndex(e => e.SenderId, "IX_Notifications_SenderId");
+
             entity.Property(e => e.SenderId).HasMaxLength(128);
 
             entity.HasOne(d => d.NotificationType).WithMany(p => p.Notifications)
@@ -252,6 +283,10 @@ public partial class DevPulsedonorContext : DbContext
 
         modelBuilder.Entity<NotificationUser>(entity =>
         {
+            entity.HasIndex(e => e.NotificationId, "IX_NotificationUsers_NotificationId");
+
+            entity.HasIndex(e => e.UserId, "IX_NotificationUsers_UserId");
+
             entity.Property(e => e.UserId).HasMaxLength(128);
 
             entity.HasOne(d => d.Notification).WithMany(p => p.NotificationUsers)
@@ -276,7 +311,7 @@ public partial class DevPulsedonorContext : DbContext
         {
             entity.HasKey(e => e.Id).HasName("PK_AspNetRoleClaims");
 
-            entity.Property(e => e.RoleId).HasMaxLength(450);
+            entity.HasIndex(e => e.RoleId, "IX_RoleClaims_RoleId");
 
             entity.HasOne(d => d.Role).WithMany(p => p.RoleClaims)
                 .HasForeignKey(d => d.RoleId)
@@ -300,6 +335,8 @@ public partial class DevPulsedonorContext : DbContext
         {
             entity.ToTable("SuccessStoryFile");
 
+            entity.HasIndex(e => e.SuccessStoryId, "IX_SuccessStoryFile_SuccessStoryId");
+
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
             entity.Property(e => e.ModifiedDate).HasColumnType("datetime");
@@ -321,6 +358,10 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<User>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK_AspNetUser");
+
+            entity.HasIndex(e => e.BloodTypeId, "IX_Users_BloodTypeId");
+
+            entity.HasIndex(e => e.GenderId, "IX_Users_GenderId");
 
             entity.Property(e => e.Id).HasMaxLength(128);
             entity.Property(e => e.Birthdate).HasColumnType("datetime");
@@ -348,6 +389,10 @@ public partial class DevPulsedonorContext : DbContext
         modelBuilder.Entity<UserCity>(entity =>
         {
             entity.ToTable("UserCity");
+
+            entity.HasIndex(e => e.CityId, "IX_UserCity_CityId");
+
+            entity.HasIndex(e => e.UserId, "IX_UserCity_UserId");
 
             entity.Property(e => e.InsertedDate).HasColumnType("datetime");
             entity.Property(e => e.InsertedFrom).HasMaxLength(128);
