@@ -30,6 +30,8 @@ using PulseDonor.Application.Hospitals.Interfaces;
 using PulseDonor.Application.Hospitals.Services;
 using PulseDonor.Application.BloodRequest.Interfaces;
 using PulseDonor.Application.BloodRequest.Services;
+using PulseDonor.Application.HallOfFame.Interfaces;
+using PulseDonor.Application.HallOfFame.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -140,6 +142,8 @@ builder.Services.AddFluentValidationClientsideAdapters();
 builder.Services.AddValidatorsFromAssemblyContaining<AddUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditAccountOverviewCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddBloodRequestCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<EditBloodRequestCommand>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();
@@ -149,6 +153,7 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IBloodDonationPointsService, BloodDonationPointsService>();
 builder.Services.AddScoped<IHospitalService, HospitalService>();
 builder.Services.AddScoped<IBloodRequestService, BloodRequestService>();
+builder.Services.AddScoped<IHallOfFameService, HallOfFameService>();
 
 var app = builder.Build();
 
