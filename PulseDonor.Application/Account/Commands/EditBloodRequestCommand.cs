@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.Account.Commands
 {
-	public class EditBloodRequestCommand
+	public class EditAccountBloodRequestCommand
 	{
 		public int BloodTypeId { get; set; }
 		public decimal Quantity { get; set; }
@@ -21,7 +21,7 @@ namespace PulseDonor.Application.Account.Commands
 		public int? Age { get; set; }
 	}
 
-	public class EditBloodRequestCommandValidator : AbstractValidator<EditBloodRequestCommand>
+	public class EditBloodRequestCommandValidator : AbstractValidator<EditAccountBloodRequestCommand>
 	{
 		public EditBloodRequestCommandValidator()
 		{

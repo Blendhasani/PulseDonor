@@ -262,7 +262,7 @@ namespace PulseDonor.Application.Account.Services
 			return response;
 		}
 
-		public async Task<int> EditBloodRequestPostAsync(int id, EditBloodRequestCommand cmd)
+		public async Task<int> EditBloodRequestPostAsync(int id, EditAccountBloodRequestCommand cmd)
 		{
 			if(id == 0)
 			{

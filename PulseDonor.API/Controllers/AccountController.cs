@@ -56,7 +56,7 @@ namespace PulseDonor.API.Controllers
 		}
 
 		[HttpPut("blood-request/{id}")]
-		public async Task<IActionResult> EditBloodRequestPost([FromRoute] int id, [FromBody] EditBloodRequestCommand cmd)
+		public async Task<IActionResult> EditBloodRequestPost([FromRoute] int id, [FromBody] EditAccountBloodRequestCommand cmd)
 		{
 			var result = await _accountService.EditBloodRequestPostAsync(id, cmd);
 			return Ok(result);
