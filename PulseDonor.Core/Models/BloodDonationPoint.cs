@@ -15,6 +15,10 @@ public partial class BloodDonationPoint
 
     public bool IsDeleted { get; set; }
 
+    public string? Longitude { get; set; }
+
+    public string? Latitude { get; set; }
+
     public string InsertedFrom { get; set; } = null!;
 
     public DateTime InsertedDate { get; set; }

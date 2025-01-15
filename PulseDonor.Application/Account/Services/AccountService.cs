@@ -175,8 +175,8 @@ namespace PulseDonor.Application.Account.Services
 			var currentUser = await _context.Users.Where(x => x.Id == _currentUser.UserId).FirstOrDefaultAsync();
 			var postKey = GeneratePostId(currentUser.FirstName, currentUser.LastName);
 
-			var newBloodRequest = new BloodRequest
-			{
+			var newBloodRequest = new PulseDonor.Infrastructure.Models.BloodRequest
+            {
 				BloodTypeId = cmd.BloodTypeId,
 				Quantity = cmd.Quantity,
 				UrgenceTypeId = cmd.UrgenceTypeId,

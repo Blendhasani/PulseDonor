@@ -24,6 +24,12 @@ using PulseDonor.Application.Data.Services;
 using PulseDonor.Application.Account.Interfaces;
 using PulseDonor.Application.Account.Services;
 using PulseDonor.Application.Account.Commands;
+using PulseDonor.Application.BloodDonationPoint.Services;
+using PulseDonor.Application.BloodDonationPoint.Interfaces;
+using PulseDonor.Application.Hospitals.Interfaces;
+using PulseDonor.Application.Hospitals.Services;
+using PulseDonor.Application.BloodRequest.Interfaces;
+using PulseDonor.Application.BloodRequest.Services;
 using PulseDonor.Application.HallOfFame.Interfaces;
 using PulseDonor.Application.HallOfFame.Services;
 
@@ -144,6 +150,9 @@ builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 builder.Services.AddScoped<IUserAPIService, UserAPIService>();
 builder.Services.AddScoped<IDataAPIService, DataAPIService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IBloodDonationPointsService, BloodDonationPointsService>();
+builder.Services.AddScoped<IHospitalService, HospitalService>();
+builder.Services.AddScoped<IBloodRequestService, BloodRequestService>();
 builder.Services.AddScoped<IHallOfFameService, HallOfFameService>();
 
 var app = builder.Build();

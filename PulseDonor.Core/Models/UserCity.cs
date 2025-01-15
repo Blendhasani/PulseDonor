@@ -12,7 +12,6 @@ public partial class UserCity
     public int CityId { get; set; }
 
     public bool IsDeleted { get; set; }
-    public bool IsPrimary { get; set; }
 
     public string InsertedFrom { get; set; } = null!;
 
@@ -21,6 +20,8 @@ public partial class UserCity
     public string? ModifiedFrom { get; set; }
 
     public DateTime? ModifiedDate { get; set; }
+
+    public bool IsPrimary { get; set; }
 
     public virtual City City { get; set; } = null!;
 
