@@ -24,6 +24,8 @@ using PulseDonor.Application.Data.Services;
 using PulseDonor.Application.Account.Interfaces;
 using PulseDonor.Application.Account.Services;
 using PulseDonor.Application.Account.Commands;
+using PulseDonor.Application.HallOfFame.Interfaces;
+using PulseDonor.Application.HallOfFame.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -142,6 +144,7 @@ builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 builder.Services.AddScoped<IUserAPIService, UserAPIService>();
 builder.Services.AddScoped<IDataAPIService, DataAPIService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IHallOfFameService, HallOfFameService>();
 
 var app = builder.Build();
 
