@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PulseDonor.Application.CurrentUser.Interface;
+using PulseDonor.Application.HallOfFame.Commands;
 using PulseDonor.Application.HallOfFame.DTO;
 using PulseDonor.Application.HallOfFame.Interfaces;
 using PulseDonor.Infrastructure.Models;
@@ -105,6 +106,87 @@ namespace PulseDonor.Application.HallOfFame.Services
 
 			return groupedData;
 
+		}
+
+		public async Task<int> CreateGroupAsync(AddGroupCommand cmd)
+		{
+			var newGroup = new Group
+			{
+				CityId = cmd.CityId,
+				Name = cmd.Name,
+				Description = cmd.Description,
+				InsertedDate = DateTime.UtcNow,
+				InsertedFrom = _currentUser.UserId,
+				IsDeleted = false
+			};
+
+			await _context.Groups.AddAsync(newGroup);
+			await _context.SaveChangesAsync();
+			return newGroup.Id;
+		}
+
+		public async Task<string> CreateJoinCodeAsync(int groupId)
+		{
+			var group = await _context.Groups.FindAsync(groupId);
+			if (group == null || group.IsDeleted)
+				throw new Exception("Grupi nuk ekziston ose është fshirë.");
+
+			var groupCodeValid = await _context.GroupMemberJoinCodes
+				.AnyAsync(gm => gm.GroupId == groupId && gm.MemberId == _currentUser.UserId && !gm.IsDeleted && gm.ExpiracyDate > DateTime.UtcNow);
+			if (groupCodeValid)
+				throw new Exception("Nuk mund te krijoni kod pasi kodi juaj eshte ende valid.");
+
+			string joinCode = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
+
+			bool codeExists = await _context.GroupMemberJoinCodes
+				.AnyAsync(jc => jc.Code == joinCode && !jc.IsDeleted);
+			if (codeExists)
+				joinCode = Guid.NewGuid().ToString("N").Substring(0, 10).ToUpper();
+
+			var joinCodeEntry = new GroupMemberJoinCode
+			{
+				MemberId = _currentUser.UserId,
+				GroupId = groupId,
+				Code = joinCode,
+				ExpiracyDate = DateTime.UtcNow.AddHours(48),
+				IsDeleted = false,
+				InsertedFrom = _currentUser.UserId,
+				InsertedDate = DateTime.UtcNow
+			};
+
+			_context.GroupMemberJoinCodes.Add(joinCodeEntry);
+			await _context.SaveChangesAsync();
+
+			return joinCode;
+		}
+
+		public async Task<string> JoinGroupAsync(int groupId, JoinGroupCommand cmd)
+		{
+			var group = await _context.Groups.FindAsync(groupId);
+			if (group == null || group.IsDeleted)
+				return "Grupi nuk ekziston ose është fshirë.";
+
+			var groupCode =  _context.GroupMemberJoinCodes
+				.Where(gm => gm.GroupId == groupId && gm.Code.Equals(cmd.JoinCode) && !gm.IsDeleted).FirstOrDefault();
+
+			if (groupCode == null)
+				return "Grupi nuk ekziston apo eshte fshire";
+
+			if (groupCode.ExpiracyDate < DateTime.UtcNow)
+				return "Kodi juaj ka skaduar!";
+
+			var newGroupMember = new GroupMember
+			{
+				GroupId = group.Id,
+				MemberId = _currentUser.UserId,
+				InsertedFrom = groupCode.MemberId,
+				InsertedDate = DateTime.UtcNow,
+				IsDeleted = false
+			};
+
+			await _context.GroupMembers.AddAsync(newGroupMember);
+			await _context.SaveChangesAsync();
+			return "Kërkesa u realizua!";
 		}
 	}
 }

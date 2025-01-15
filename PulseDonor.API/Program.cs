@@ -32,6 +32,7 @@ using PulseDonor.Application.BloodRequest.Interfaces;
 using PulseDonor.Application.BloodRequest.Services;
 using PulseDonor.Application.HallOfFame.Interfaces;
 using PulseDonor.Application.HallOfFame.Services;
+using PulseDonor.Application.HallOfFame.Commands;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -144,6 +145,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<EditUserAPICommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditAccountOverviewCommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<AddBloodRequestCommand>();
 builder.Services.AddValidatorsFromAssemblyContaining<EditAccountBloodRequestCommand>();
+builder.Services.AddValidatorsFromAssemblyContaining<AddGroupCommand>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ICityAPIService, CityAPIService>();
