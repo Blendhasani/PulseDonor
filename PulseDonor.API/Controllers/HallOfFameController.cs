@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PulseDonor.Application.HallOfFame.Commands;
 using PulseDonor.Application.HallOfFame.Interfaces;
 
 namespace PulseDonor.API.Controllers
@@ -49,5 +50,40 @@ namespace PulseDonor.API.Controllers
 			};
 			return Ok(result);
 		}
+
+		[HttpPost("group")]
+		public async Task<IActionResult> CreateGroup(AddGroupCommand cmd)
+		{
+			var addedGroup = await _hallOfFameService.CreateGroupAsync(cmd);
+			var result = new
+			{
+				data = addedGroup
+			};
+			return Ok(result);
+		}
+
+
+		[HttpPost("group-join-code")]
+		public async Task<IActionResult> CreateJoinCode(int groupId)
+		{
+			var addedGroupCode = await _hallOfFameService.CreateJoinCodeAsync(groupId);
+			var result = new
+			{
+				data = addedGroupCode
+			};
+			return Ok(result);
+		}
+
+		[HttpPost("join-group/{groupId}")]
+		public async Task<IActionResult> JoinGroup([FromRoute] int groupId, [FromBody] JoinGroupCommand cmd)
+		{
+			var addedGroupMember = await _hallOfFameService.JoinGroupAsync(groupId,cmd);
+			var result = new
+			{
+				data = addedGroupMember
+			};
+			return Ok(result);
+		}
+
 	}
 }

@@ -1,4 +1,5 @@
-﻿using PulseDonor.Application.HallOfFame.DTO;
+﻿using PulseDonor.Application.HallOfFame.Commands;
+using PulseDonor.Application.HallOfFame.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,9 @@ namespace PulseDonor.Application.HallOfFame.Interfaces
 		Task<List<TopThreeDonorsDto>> GetTopThreeDonorsAsync();
 		Task<List<TopOneHundredDonorsDto>> GetTopOneHundredDonorsAsync();
 		Task<List<BloodTypesChartDto>> GetBloodTypesChartAsync();
+		Task<int> CreateGroupAsync(AddGroupCommand cmd);
+		Task<string> CreateJoinCodeAsync(int groupId);
+		Task<string> JoinGroupAsync(int groupId, JoinGroupCommand cmd);
+
 	}
 }
