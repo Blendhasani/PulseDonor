@@ -20,14 +20,33 @@ namespace PulseDonor.API.Controllers
 		[HttpGet("top-three-donors")]
 		public async Task<IActionResult> GetTopThreeDonors()
 		{
-			var result = await _hallOfFameService.GetTopThreeDonorsAsync();
+			var donors = await _hallOfFameService.GetTopThreeDonorsAsync();
+			var result = new
+			{
+				data = donors
+			};
 			return Ok(result);
 		}
 
 		[HttpGet("top-one-hundred-donors")]
 		public async Task<IActionResult> GetTopOneHundredDonors()
 		{
-			var result = await _hallOfFameService.GetTopOneHundredDonors();
+			var donors = await _hallOfFameService.GetTopOneHundredDonorsAsync();
+			var result = new
+			{
+				data = donors
+			};
+			return Ok(result);
+		}
+
+		[HttpGet("blood-types-chart")]
+		public async Task<IActionResult> GetBloodTypesChart()
+		{
+			var bloodTypes = await _hallOfFameService.GetBloodTypesChartAsync();
+			var result = new
+			{
+				data = bloodTypes
+			};
 			return Ok(result);
 		}
 	}

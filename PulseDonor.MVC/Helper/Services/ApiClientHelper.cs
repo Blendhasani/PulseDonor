@@ -2,6 +2,7 @@
 using System.Text.Json;
 using System.Text;
 using System.Net.Http.Headers;
+using PulseDonor.MVC.Helper.DTO;
 
 namespace PulseDonor.MVC.Helper.Services
 {
@@ -117,6 +118,89 @@ namespace PulseDonor.MVC.Helper.Services
 			return new StringContent(json, Encoding.UTF8, "application/json");
 		}
 
+		//private async Task<TResult> DeserializeResponse<TResult>(HttpResponseMessage response)
+		//{
+		//	var json = await response.Content.ReadAsStringAsync();
+
+		//	if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+		//	{
+		//		Console.WriteLine($"Unauthorized Access: {json}");
+		//		throw new UnauthorizedAccessException("Unauthorized: Invalid or expired token.");
+		//	}
+
+		//	if (!response.IsSuccessStatusCode)
+		//	{
+		//		Console.WriteLine($"Request failed with status code {response.StatusCode}: {json}");
+		//		throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {json}");
+		//	}
+
+		//	//try
+		//	//{
+		//	//	var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+		//	//	if (deserialized == null)
+		//	//	{
+		//	//		// Handle the null case:
+		//	//		// For example, return a default value or throw a different exception
+		//	//		Console.WriteLine("Warning: Deserialized object is null.");
+		//	//		return default!; // or throw new SomeCustomException("Null content");
+		//	//	}
+
+		//	//	return deserialized;
+		//	//}
+		//	//catch (JsonException ex)
+		//	//{
+		//	//	Console.WriteLine($"Deserialization Error: {ex.Message}");
+		//	//	throw;
+		//	//}
+
+		//	try
+		//	{
+		//		// Try normal JSON deserialization
+		//		var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+		//		if (deserialized != null)
+		//			return deserialized;
+
+		//		// If it's null, try fallback logic
+		//		return TryHandleFallback<TResult>(json);
+		//	}
+		//	catch (JsonException)
+		//	{
+		//		// If we get a JSON exception, try fallback logic
+		//		return TryHandleFallback<TResult>(json);
+		//	}
+
+		//}
+
+		//private async Task<TResult> DeserializeResponse<TResult>(HttpResponseMessage response)
+		//{
+		//	var json = await response.Content.ReadAsStringAsync();
+
+		//	if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+		//	{
+		//		Console.WriteLine($"Unauthorized Access: {json}");
+		//		throw new UnauthorizedAccessException("Unauthorized: Invalid or expired token.");
+		//	}
+
+		//	if (!response.IsSuccessStatusCode)
+		//	{
+		//		Console.WriteLine($"Request failed with status code {response.StatusCode}: {json}");
+		//		throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {json}");
+		//	}
+
+		//	try
+		//	{
+		//		var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+		//		if (deserialized != null)
+		//			return deserialized;
+
+		//		return TryHandleFallback<TResult>(json);
+		//	}
+		//	catch (JsonException)
+		//	{
+		//		return TryHandleFallback<TResult>(json);
+		//	}
+
+		//}
 		private async Task<TResult> DeserializeResponse<TResult>(HttpResponseMessage response)
 		{
 			var json = await response.Content.ReadAsStringAsync();
@@ -133,42 +217,30 @@ namespace PulseDonor.MVC.Helper.Services
 				throw new HttpRequestException($"Request failed with status code {response.StatusCode}: {json}");
 			}
 
-			//try
-			//{
-			//	var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
-			//	if (deserialized == null)
-			//	{
-			//		// Handle the null case:
-			//		// For example, return a default value or throw a different exception
-			//		Console.WriteLine("Warning: Deserialized object is null.");
-			//		return default!; // or throw new SomeCustomException("Null content");
-			//	}
-
-			//	return deserialized;
-			//}
-			//catch (JsonException ex)
-			//{
-			//	Console.WriteLine($"Deserialization Error: {ex.Message}");
-			//	throw;
-			//}
-
 			try
 			{
-				// Try normal JSON deserialization
-				var deserialized = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
-				if (deserialized != null)
-					return deserialized;
+				// Try deserializing as ApiResponse<TResult> (wrapped in "data")
+				var apiResponse = JsonSerializer.Deserialize<ApiResponse<TResult>>(json, _jsonOptions);
+				if (apiResponse != null && apiResponse.Data != null)
+				{
+					return apiResponse.Data;
+				}
 
-				// If it's null, try fallback logic
+				// If deserialization as ApiResponse<TResult> fails, try direct deserialization to TResult
+				var directResult = JsonSerializer.Deserialize<TResult>(json, _jsonOptions);
+				if (directResult != null)
+				{
+					return directResult;
+				}
+
 				return TryHandleFallback<TResult>(json);
 			}
 			catch (JsonException)
 			{
-				// If we get a JSON exception, try fallback logic
 				return TryHandleFallback<TResult>(json);
 			}
-
 		}
+
 
 		private TResult TryHandleFallback<TResult>(string rawValue)
 		{

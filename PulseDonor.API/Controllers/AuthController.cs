@@ -20,8 +20,12 @@ namespace PulseDonor.API.Controllers
         [HttpPost("signup")]
         public async Task<IActionResult> Signup(SignupCommand command)
         {
-            var result = await _userService.SignupAsync(command);
-            return Ok(result);
+            var signUp = await _userService.SignupAsync(command);
+			var result = new
+			{
+				data = signUp
+			};
+			return Ok(result);
         }
 
         [HttpPost("login")]
@@ -30,8 +34,8 @@ namespace PulseDonor.API.Controllers
             
                 try
                 {
-                    var result = await _userService.LoginAsync(command);
-                    return Ok(result); // Ensure it's wrapped in a valid JSON object
+				var result = await _userService.LoginAsync(command);
+				return Ok(result);
                 }
                 catch (UnauthorizedAccessException ex)
                 {
@@ -48,8 +52,12 @@ namespace PulseDonor.API.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-			var result = await _userService.LogoutAsync();
-            return Ok(result);
+			var logout = await _userService.LogoutAsync();
+			var result = new
+			{
+				data = logout
+			};
+			return Ok(result);
 
 		}
 	}
