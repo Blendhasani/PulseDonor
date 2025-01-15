@@ -81,6 +81,7 @@ namespace PulseDonor.Application.User.Services
 		public async Task<List<UsersAPIDto>> GetUsersAsync()
 		{
 			var usersQuery = _context.Users
+				.OrderByDescending(x=>x.InsertedDate)
 				.AsQueryable();
 			var users = await usersQuery
 			   .Select(x => new

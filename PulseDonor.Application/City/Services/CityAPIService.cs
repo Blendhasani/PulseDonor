@@ -34,7 +34,7 @@ namespace PulseDonor.Application.City.Services
 
 		public async Task<List<CitiesAPIDto>> GetCitiesAsync()
 		{
-			var citiesQuery = _context.Cities.AsQueryable();
+			var citiesQuery = _context.Cities.OrderByDescending(x=>x.Id).AsQueryable();
 
 			return citiesQuery.Select(x => new CitiesAPIDto
 			{

@@ -19,38 +19,58 @@ namespace PulseDonor.API.Controllers
 		}
 
 		[HttpGet("GetList")]
-		public async Task<List<UsersAPIDto>> GetUsers()
+		public async Task<IActionResult> GetUsers()
 		{
-			var result = await _userService.GetUsersAsync();
-			return result;
+			var users = await _userService.GetUsersAsync();
+			var result = new
+			{
+				data = users
+			};
+			return Ok(result);
 		}
 
 		[HttpPost("Add")]
-		public async Task<string> AddUser([FromBody] AddUserAPICommand entity)
+		public async Task<IActionResult> AddUser([FromBody] AddUserAPICommand entity)
 		{
-			var result = await _userService.AddUserAsync(entity);
-			return result;
+			var addedUser = await _userService.AddUserAsync(entity);
+			var result = new
+			{
+				data = addedUser
+			};
+			return Ok(result);
 		}
 
 		[HttpGet("Get")]
-		public async Task<SingleUserAPIDto> GetUserById(string id)
+		public async Task<IActionResult> GetUserById(string id)
 		{
-			var result = await _userService.GetUserByIdAsync(id);
-			return result;
+			var user = await _userService.GetUserByIdAsync(id);
+			var result = new
+			{
+				data = user
+			};
+			return Ok(result);
 		}
 
 		[HttpPut("Edit")]
-		public async Task<int> EditUser(EditUserAPICommand entity)
+		public async Task<IActionResult> EditUser(EditUserAPICommand entity)
 		{
-			var result = await _userService.EditUserAsync(entity);
-			return result;
+			var editedUser = await _userService.EditUserAsync(entity);
+			var result = new
+			{
+				data = editedUser
+			};
+			return Ok(result);
 		}
 
 		[HttpPut("UpdateIsBlocked")]
-		public async Task<string> UpdateIsBlocked(UpdateIsBlockedUserAPICommand entity)
+		public async Task<IActionResult> UpdateIsBlocked(UpdateIsBlockedUserAPICommand entity)
 		{
-			var result = await _userService.UpdateIsBlockedAsync(entity);
-			return result;
+			var user = await _userService.UpdateIsBlockedAsync(entity);
+			var result = new
+			{
+				data = user
+			};
+			return Ok(result);
 		}
 
 

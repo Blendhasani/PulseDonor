@@ -16,21 +16,33 @@ namespace PulseDonor.API.Controllers
 		[HttpGet("blood-types")]
 		public async Task<IActionResult> GetBloodTypes()
 		{
-			var result = await _dataService.GetBloodTypes();
+			var bloodTypes = await _dataService.GetBloodTypes();
+			var result = new
+			{
+				data = bloodTypes
+			};
 			return Ok(result);
 		}
 
 		[HttpGet("users")]
 		public async Task<IActionResult> GetUsers()
 		{
-			var result = await _dataService.GetUsers();
+			var users = await _dataService.GetUsers();
+			var result = new
+			{
+				data = users
+			};
 			return Ok(result);
 		}
 
 		[HttpGet("cities")]
 		public async Task<IActionResult> GetCities()
 		{
-			var result = await _dataService.GetCities();
+			var cities = await _dataService.GetCities();
+			var result = new
+			{
+				data = cities
+			};
 			return Ok(result);
 		}
 

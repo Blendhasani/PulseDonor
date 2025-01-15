@@ -56,8 +56,11 @@ namespace ChatGPT_CSharp.Controllers
 				{
 					outputResult += choice.Message.Content;
 				}
-
-				return Ok(outputResult);
+				var result = new
+				{
+					data = outputResult
+				};
+				return Ok(result);
 			}
 			catch (Exception ex)
 			{
@@ -90,7 +93,7 @@ namespace ChatGPT_CSharp.Controllers
 				new OpenAI_API.Chat.ChatMessage
 				{
 					Role = OpenAI_API.Chat.ChatMessageRole.User, // Use ChatMessageRole enum
-                    Content = "Shkruani një kuotë te shkurter rreth dhurimit te gjakut apo shpetimit te jetes"
+                    Content = "Shkruani një kuotë te shkurter rreth dhurimit te gjakut apo shpetimit te jetes,ktheni rezultatin jo te futur ne thonjeza"
 				}
 			},
 					MaxTokens = 3600 // Adjust token limit based on your needs
@@ -105,7 +108,11 @@ namespace ChatGPT_CSharp.Controllers
 					outputResult += choice.Message.Content;
 				}
 
-				return Ok(outputResult);
+				var result = new
+				{
+					data = outputResult
+				};
+				return Ok(result);
 			}
 			catch (Exception ex)
 			{

@@ -21,13 +21,19 @@ namespace PulseDonor.Application.Data.Services
 
 		public async Task<List<DropdownDataDto>> GetBloodTypes()
 		{
-			var data = await _context.BloodTypes.Select(x => new DropdownDataDto
-			{
-				Value = x.Id.ToString(),
-				Text = x.Type
-			}).ToListAsync();
-			return data;
+			// Get all enum values
+			var data = Enum.GetValues(typeof(Enums.BloodType))
+				.Cast<Enums.BloodType>()
+				.Select(bloodType => new DropdownDataDto
+				{
+					Value = ((int)bloodType).ToString(), // Enum integer value
+					Text = bloodType.ToString().Replace('_', ' ') // Enum name with underscores replaced by spaces
+				})
+				.ToList();
+
+			return await Task.FromResult(data); // Simulate asynchronous behavior
 		}
+
 
 		public async Task<List<DropdownDataDto>> GetUsers()
 		{

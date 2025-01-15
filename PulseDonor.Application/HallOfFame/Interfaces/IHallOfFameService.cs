@@ -10,6 +10,7 @@ namespace PulseDonor.Application.HallOfFame.Interfaces
 	public interface IHallOfFameService
 	{
 		Task<List<TopThreeDonorsDto>> GetTopThreeDonorsAsync();
-		Task<List<TopOneHundredDonorsDto>> GetTopOneHundredDonors();
+		Task<List<TopOneHundredDonorsDto>> GetTopOneHundredDonorsAsync();
+		Task<List<BloodTypesChartDto>> GetBloodTypesChartAsync();
 	}
 }

@@ -21,37 +21,59 @@ namespace PulseDonor.API.Controllers
         }
 
         [HttpPost("Add")]
-        public async Task<int> Add(AddBloodDonationPointCommand cmd)
+        public async Task<IActionResult> Add(AddBloodDonationPointCommand cmd)
         {
-            var result = await _bloodService.AddAsync(cmd);
-            return result;
+            var addedBloodDonation = await _bloodService.AddAsync(cmd);
+			var result = new
+			{
+				data = addedBloodDonation
+			};
+			return Ok(result);
         }
 
         [HttpGet()]
-        public async Task<List<GetBloodDonationListDto>> GetCities()
+        public async Task<IActionResult> GetBloodDonations()
         {
-            return await _bloodService.GetAllAsync();
-        }
+            var bloodDonations = await _bloodService.GetAllAsync();
+			var result = new
+			{
+				data = bloodDonations
+			};
+            return Ok(result);
+
+		}
 
         [HttpGet("{id:int}")]
-        public async Task<GetBloodDonationListDto> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _bloodService.GetByIdAsync(id);
-            return result;
+            var bloodDonationPoint = await _bloodService.GetByIdAsync(id);
+			var result = new
+			{
+				data = bloodDonationPoint
+			};
+			return Ok(result);
         }
 
         [HttpPut("edit")]
-        public async Task<int> Edit(EditBloodDonationPointCommand cmd)
+        public async Task<IActionResult> Edit(EditBloodDonationPointCommand cmd)
         {
-            var result = await _bloodService.EditAsync(cmd);
-            return result;
+            var editedBloodDonationPoint = await _bloodService.EditAsync(cmd);
+			var result = new
+			{
+				data = editedBloodDonationPoint
+			};
+			return Ok(result);
         }
 
         [HttpDelete("delete")]
-        public async Task<int> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await _bloodService.DeleteAsync(id);
-            return result;
+            var deletedBloodDonationPoint = await _bloodService.DeleteAsync(id);
+			var result = new
+			{
+				data = deletedBloodDonationPoint
+			};
+			return Ok(result);
         }
     }
 }

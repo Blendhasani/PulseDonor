@@ -23,43 +23,60 @@ namespace PulseDonor.API.Controllers
         }
 
 		[HttpPost("Add")]
-		public async Task<int> AddCity(AddCityAPICommand entity)
+		public async Task<IActionResult> AddCity(AddCityAPICommand entity)
 		{
-			var result = await _cityService.AddCityAsync(entity);
-			return result;
+			var addedCity = await _cityService.AddCityAsync(entity);
+			var result = new
+			{
+				data = addedCity
+			};
+			return Ok(result);
 		}
 
         [HttpGet("GetList")]
-		public async Task<List<CitiesAPIDto>> GetCities()
+		public async Task<IActionResult> GetCities()
 		{
-			//BLEND HERE IT IS ONE IMPLEMENTATION FOR _Current User and jwt schema 
-			var abc = _currentUser.UserId;
-
-            var result = await _cityService.GetCitiesAsync();
-			return result;
+            var cities = await _cityService.GetCitiesAsync();
+			var result = new
+			{
+				data = cities
+			};
+			return Ok(result);
 		}
 
 
 		[HttpGet("Get")]
-		public async Task<SingleCityAPIDto> GetCityById(int id)
+		public async Task<IActionResult> GetCityById(int id)
 		{
-			var result = await _cityService.GetCityByIdAsync(id);
-			return result;
+			var city = await _cityService.GetCityByIdAsync(id);
+			var result = new
+			{
+				data = city
+			};
+			return Ok(result);
 		}
 
 		[HttpPut("Edit")]
-		public async Task<int> EditCity(EditCityAPICommand entity)
+		public async Task<IActionResult> EditCity(EditCityAPICommand entity)
 		{
-			var result = await _cityService.EditCityAsync(entity);
-			return result;
+			var editedCity = await _cityService.EditCityAsync(entity);
+			var result = new
+			{
+				data = editedCity
+			};
+			return Ok(result);
 		}
 
 
 		[HttpDelete("Delete")]
-		public async Task<int> DeleteCity(int id)
+		public async Task<IActionResult> DeleteCity(int id)
 		{
-			var result = await _cityService.DeleteCityAsync(id);
-			return result;
+			var deletedCity = await _cityService.DeleteCityAsync(id);
+			var result = new
+			{
+				data = deletedCity
+			};
+			return Ok(result);
 		}
 
 	}

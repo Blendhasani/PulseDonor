@@ -20,37 +20,58 @@ namespace PulseDonor.API.Controllers
         }
 
         [HttpPost("add")]
-        public async Task<int> Add(AddBloodeRequestCommand cmd)
+        public async Task<IActionResult> Add(AddBloodeRequestCommand cmd)
         {
-            var result = await _bloodService.AddAsync(cmd);
-            return result;
+            var addedBloodRequest = await _bloodService.AddAsync(cmd);
+			var result = new
+			{
+				data = addedBloodRequest
+			};
+			return Ok(result);
         }
 
         [HttpGet()]
-        public async Task<List<GetBloodRequestDto>> GetCities()
+        public async Task<IActionResult> GetBloodRequests()
         {
-            return await _bloodService.GetAllAsync();
-        }
+            var bloodRequests = await _bloodService.GetAllAsync();
+			var result = new
+			{
+				data = bloodRequests
+			};
+            return Ok(result);
+		}
 
         [HttpGet("{id:int}")]
-        public async Task<GetBloodRequestDto> GetById(int id)
+        public async Task<IActionResult> GetById(int id)
         {
-            var result = await _bloodService.GetByIdAsync(id);
-            return result;
+            var bloodRequest = await _bloodService.GetByIdAsync(id);
+			var result = new
+			{
+				data = bloodRequest
+			};
+			return Ok(result);
         }
 
         [HttpPut("edit")]
-        public async Task<int> Edit(EditBloodRequestCommand cmd)
+        public async Task<IActionResult> Edit(EditBloodRequestCommand cmd)
         {
-            var result = await _bloodService.EditAsync(cmd);
-            return result;
+            var editedBloodRequest = await _bloodService.EditAsync(cmd);
+			var result = new
+			{
+				data = editedBloodRequest
+			};
+			return Ok(result);
         }
 
         [HttpDelete("delete")]
-        public async Task<int> Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = await _bloodService.DeleteAsync(id);
-            return result;
+            var deletedBloodRequest = await _bloodService.DeleteAsync(id);
+			var result = new
+			{
+				data = deletedBloodRequest
+			};
+			return Ok(result);
         }
     }
 }

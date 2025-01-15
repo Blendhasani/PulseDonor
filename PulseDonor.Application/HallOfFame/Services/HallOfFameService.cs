@@ -41,7 +41,7 @@ namespace PulseDonor.Application.HallOfFame.Services
 
 		}
 
-		public async Task<List<TopOneHundredDonorsDto>> GetTopOneHundredDonors()
+		public async Task<List<TopOneHundredDonorsDto>> GetTopOneHundredDonorsAsync()
 		{
 			var bloodRequests = _context.BloodRequests
 				.Include(x => x.Donor)
@@ -60,7 +60,7 @@ namespace PulseDonor.Application.HallOfFame.Services
 				.ToListAsync();
 
 			var topOneHundred = groupedDonors
-				.Take(100)
+				.Take(5)
 				.Select((g, index) => new OneHundredDonorsDto
 				{
 					FullName = g.FullName,
@@ -87,5 +87,24 @@ namespace PulseDonor.Application.HallOfFame.Services
 	};
 		}
 
+		public async Task<List<BloodTypesChartDto>> GetBloodTypesChartAsync()
+		{
+			var users = _context.Users.Where(x => !x.IsBlocked).AsQueryable();
+
+			int total = users.Count();
+
+			var groupedData = users
+				.GroupBy(user => user.BloodType.Type)
+				.Select(group => new BloodTypesChartDto()
+				{
+					BloodType = group.Key, 
+					Count = group.Count(),
+					Percentage = (group.Count() / (double)total) * 100
+				})
+				.ToList();
+
+			return groupedData;
+
+		}
 	}
 }
