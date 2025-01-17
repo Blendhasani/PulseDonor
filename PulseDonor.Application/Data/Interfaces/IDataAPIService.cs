@@ -13,6 +13,8 @@ namespace PulseDonor.Application.Data.Interfaces
 		Task<List<DropdownDataDto>> GetBloodTypes();
 		Task<List<DropdownDataDto>> GetUsers();
 		Task<List<DropdownDataDto>> GetCities();
+		Task<List<DropdownDataDto>> GetUrgenceTypes();
+		Task<List<DropdownDataDto>> GetHospitals();
 
 	}
 }

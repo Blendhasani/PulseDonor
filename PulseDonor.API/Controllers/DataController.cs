@@ -46,5 +46,27 @@ namespace PulseDonor.API.Controllers
 			return Ok(result);
 		}
 
+		[HttpGet("urgence-types")]
+		public async Task<IActionResult> GetUrgenceTypes()
+		{
+			var urgenceTypes = await _dataService.GetUrgenceTypes();
+			var result = new
+			{
+				data = urgenceTypes
+			};
+			return Ok(result);
+		}
+
+
+		[HttpGet("hospitals")]
+		public async Task<IActionResult> GetHospitals()
+		{
+			var hospitals = await _dataService.GetHospitals();
+			var result = new
+			{
+				data = hospitals
+			};
+			return Ok(result);
+		}
 	}
 }

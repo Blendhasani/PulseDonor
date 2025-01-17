@@ -55,5 +55,25 @@ namespace PulseDonor.Application.Data.Services
 			}).ToListAsync();
 			return data;
 		}
+
+		public async Task<List<DropdownDataDto>> GetUrgenceTypes()
+		{
+			var data = await _context.UrgenceTypes.Select(x => new DropdownDataDto
+			{
+				Value = x.Id.ToString(),
+				Text = x.Type
+			}).ToListAsync();
+			return data;
+		}
+
+		public async Task<List<DropdownDataDto>> GetHospitals()
+		{
+			var data = await _context.Hospitals.Select(x => new DropdownDataDto
+			{
+				Value = x.Id.ToString(),
+				Text = x.Name
+			}).ToListAsync();
+			return data;
+		}
 	}
 }
