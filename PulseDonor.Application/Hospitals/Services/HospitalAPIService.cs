@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.Hospitals.Services
 {
-    public class HospitalService : IHospitalService
+    public class HospitalAPIService : IHospitalAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public HospitalService(DevPulsedonorContext context)
+        public HospitalAPIService(DevPulsedonorContext context)
         {
             _context = context;
         }

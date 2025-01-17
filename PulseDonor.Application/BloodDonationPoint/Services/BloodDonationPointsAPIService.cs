@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.BloodDonationPoint.Services
 {
-    public class BloodDonationPointsService : IBloodDonationPointsService
+    public class BloodDonationPointsAPIService : IBloodDonationPointsAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public BloodDonationPointsService(DevPulsedonorContext context)
+        public BloodDonationPointsAPIService(DevPulsedonorContext context)
         {
             _context = context;
         }

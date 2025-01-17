@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.Testimonials.Interfaces
 {
-    public interface ITestimonialsService
+    public interface ITestimonialsAPIService
     {
         Task<int> AddAsync(AddTestimonialCommand cmd);
         Task<List<GetTestimonialDto>> GetAllAsync();

@@ -1,0 +1,32 @@
+﻿
+@model PulseDonor.MVC.BloodDonationPoint.Commands.EditAPIBloodDonationPointCommand
+<div class="modal-header">
+
+    <h5 class="modal-title">Perditeso Qytetin</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <i aria-hidden="true" class="ki ki-close"></i>
+    </button>
+</div>
+<form asp-controller="City" asp-action="Edit" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input asp-for="Id" type="hidden" />
+
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Emri <span class="text-danger">*</span></label>
+            <input type="text" asp-for="Address" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="Address"></span>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Mbyll</button>
+        <button type="submit" class="btn btn-primary">Ruaj</button>
+    </div>
+</form>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+

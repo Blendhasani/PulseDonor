@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.Hospitals.Interfaces
 {
-    public interface IHospitalService
+    public interface IHospitalAPIService
     {
         Task<int> AddAsync(AddHospitalCommand cmd);
         Task<List<GetHospitalsDto>> GetAllAsync();

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace PulseDonor.Infrastructure.Models;
 
@@ -14,6 +15,57 @@ public partial class DevPulsedonorContext : DbContext
         : base(options)
     {
     }
+
+    public override int SaveChanges()
+    {
+        SetDefaultValuesForEntities();
+        return base.SaveChanges();
+    }
+
+    public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        SetDefaultValuesForEntities();
+        return await base.SaveChangesAsync(cancellationToken);
+    }
+
+    private void SetDefaultValuesForEntities()
+    {
+        var entries = ChangeTracker.Entries()
+            .Where(e => e.State == EntityState.Added && e.Entity != null);
+
+        foreach (var entry in entries)
+        {
+            SetDefaultValues(entry);
+        }
+    }
+
+    private void SetDefaultValues(EntityEntry entry)
+    {
+        var entity = entry.Entity;
+        var entityType = entity.GetType();
+
+        var insertedFromProperty = entityType.GetProperty("InsertedFrom");
+        var insertedDateProperty = entityType.GetProperty("InsertedDate");
+
+        if (insertedFromProperty != null && insertedFromProperty.PropertyType == typeof(string))
+        {
+            var currentValue = insertedFromProperty.GetValue(entity) as string;
+            if (string.IsNullOrEmpty(currentValue))
+            {
+                insertedFromProperty.SetValue(entity, "ADMIN");
+            }
+        }
+
+        if (insertedDateProperty != null && insertedDateProperty.PropertyType == typeof(DateTime?))
+        {
+            var currentValue = insertedDateProperty.GetValue(entity) as DateTime?;
+            if (currentValue == null)
+            {
+                insertedDateProperty.SetValue(entity, DateTime.UtcNow);
+            }
+        }
+    }
+
 
     public virtual DbSet<BloodDonationPoint> BloodDonationPoints { get; set; }
 

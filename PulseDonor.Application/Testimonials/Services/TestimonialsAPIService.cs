@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.Testimonials.Services
 {
-    public class TestimonialsService : ITestimonialsService
+    public class TestimonialsAPIService : ITestimonialsAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public TestimonialsService(DevPulsedonorContext context)
+        public TestimonialsAPIService(DevPulsedonorContext context)
         {
             _context = context;
         }

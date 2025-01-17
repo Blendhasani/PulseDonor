@@ -11,6 +11,14 @@ using PulseDonor.MVC.Auth.Interfaces;
 using PulseDonor.MVC.Auth.Services;
 using PulseDonor.MVC.User.Commands;
 using PulseDonor.MVC.Auth.Commands;
+using PulseDonor.MVC.BloodDonationPointsController.Interfaces;
+using PulseDonor.MVC.BloodDonationPointsController.Services;
+using PulseDonor.MVC.BloodRequest.Interfaces;
+using PulseDonor.MVC.BloodRequest.Services;
+using PulseDonor.MVC.Testimonials.Interfaces;
+using PulseDonor.MVC.Testimonials.Services;
+using PulseDonor.MVC.Hospitals.Interfaces;
+using PulseDonor.MVC.Hospitals.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +49,10 @@ builder.Services.AddScoped<IApiClientHelper, ApiClientHelper>();
 builder.Services.AddScoped<ICityService, CityService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IBloodDonationPointsService, BloodDonationPointsService>();
+builder.Services.AddScoped<IBloodRequestService, BloodRequestService>();
+builder.Services.AddScoped<ITestimonialsService, TestimonialsService>();
+builder.Services.AddScoped<IHospitalService, HospitalService>();
 
 builder.Services.AddHttpClient();
 

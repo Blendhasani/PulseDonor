@@ -14,8 +14,8 @@ namespace PulseDonor.API.Controllers
     [ApiController]
     public class BloodDonationPointsController : ControllerBase
     {
-        private readonly IBloodDonationPointsService _bloodService;
-        public BloodDonationPointsController(IBloodDonationPointsService bloodService)
+        private readonly IBloodDonationPointsAPIService _bloodService;
+        public BloodDonationPointsController(IBloodDonationPointsAPIService bloodService)
         {
             _bloodService = bloodService;
         }
@@ -31,7 +31,7 @@ namespace PulseDonor.API.Controllers
 			return Ok(result);
         }
 
-        [HttpGet()]
+        [HttpGet("GetAll")]
         public async Task<IActionResult> GetBloodDonations()
         {
             var bloodDonations = await _bloodService.GetAllAsync();
@@ -43,7 +43,7 @@ namespace PulseDonor.API.Controllers
 
 		}
 
-        [HttpGet("{id:int}")]
+        [HttpGet("Get")]
         public async Task<IActionResult> GetById(int id)
         {
             var bloodDonationPoint = await _bloodService.GetByIdAsync(id);

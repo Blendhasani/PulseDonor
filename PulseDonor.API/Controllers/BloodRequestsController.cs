@@ -13,8 +13,8 @@ namespace PulseDonor.API.Controllers
     [ApiController]
     public class BloodRequestsController : ControllerBase
     {
-        private readonly IBloodRequestService _bloodService;
-        public BloodRequestsController(IBloodRequestService bloodService)
+        private readonly IBloodRequestAPIService _bloodService;
+        public BloodRequestsController(IBloodRequestAPIService bloodService)
         {
             _bloodService = bloodService;
         }

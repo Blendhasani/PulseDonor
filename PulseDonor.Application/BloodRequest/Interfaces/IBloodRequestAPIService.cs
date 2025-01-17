@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PulseDonor.Application.BloodRequest.Interfaces
 {
-    public interface IBloodRequestService
+    public interface IBloodRequestAPIService
     {
         Task<int> AddAsync(AddBloodeRequestCommand cmd);
         Task<List<GetBloodRequestDto>> GetAllAsync();

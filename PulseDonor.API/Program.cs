@@ -152,12 +152,14 @@ builder.Services.AddScoped<ICityAPIService, CityAPIService>();
 builder.Services.AddScoped<IUserAPIService, UserAPIService>();
 builder.Services.AddScoped<IDataAPIService, DataAPIService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<IBloodDonationPointsService, BloodDonationPointsService>();
-builder.Services.AddScoped<IHospitalService, HospitalService>();
-builder.Services.AddScoped<IBloodRequestService, BloodRequestService>();
+builder.Services.AddScoped<IBloodDonationPointsAPIService, BloodDonationPointsAPIService>();
+builder.Services.AddScoped<IHospitalAPIService, HospitalAPIService>();
+builder.Services.AddScoped<IBloodRequestAPIService, BloodRequestAPIService>();
 builder.Services.AddScoped<IHallOfFameService, HallOfFameService>();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionFilterMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {
