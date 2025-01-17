@@ -24,16 +24,13 @@ namespace PulseDonor.Application.BloodRequest.Services
         {
             var bloodPoint = new PulseDonor.Infrastructure.Models.BloodRequest
             {
-               AuthorId = cmd.AuthorId,
                BloodTypeId = cmd.BloodTypeId,
                UrgenceTypeId = cmd.UrgencTypeId,
                HospitalId = cmd.HospitalId,
-               DonorId = cmd.DonorId,
                FirstName = cmd.FirstName,
                LastName = cmd.LastName,
                Age = cmd.Age,
                Quantity = cmd.Quantity,
-               PostKey = cmd.PostKey,
                DonationDate = cmd.DonationDate,
                DonationTime = cmd.DonationTime,
             };
@@ -64,17 +61,17 @@ namespace PulseDonor.Application.BloodRequest.Services
             var blood = await _context.BloodRequests
                 .Where(x => x.Id == cmd.Id)
                 .FirstOrDefaultAsync();
-
-            blood.AuthorId = cmd.AuthorId;
+            if(blood is null)
+            {
+                return 0;
+            }
             blood.BloodTypeId = cmd.BloodTypeId;
-            blood.UrgenceTypeId = cmd.UrgencTypeId;
+            blood.UrgenceTypeId = cmd.UrgenceTypeId;
             blood.HospitalId = cmd.HospitalId;
-            blood.DonorId = cmd.DonorId;
             blood.FirstName = cmd.FirstName;
             blood.LastName = cmd.LastName;
             blood.Age = cmd.Age;
             blood.Quantity = cmd.Quantity;
-            blood.PostKey = cmd.PostKey;
             blood.DonationDate = cmd.DonationDate;
             blood.DonationTime = cmd.DonationTime;
 
@@ -85,17 +82,37 @@ namespace PulseDonor.Application.BloodRequest.Services
 
         public async Task<List<GetBloodRequestDto>> GetAllAsync()
         {
-            var blood = _context.BloodRequests.AsQueryable();
+            var blood = _context.BloodRequests
+                .Include(x=>x.BloodType)
+                .Include(x=>x.UrgenceType)
+                .Include(x=>x.Hospital)
+                .Include(x=>x.Author)
+                .AsQueryable();
 
             return blood.Select(x => new GetBloodRequestDto
             {
                 Id = x.Id,
-                AuthorId = x.AuthorId,
-                BloodTypeId = x.BloodTypeId,
-                UrgencTypeId = x.UrgenceTypeId,
-                HospitalId = x.HospitalId,
-                DonorId = x.DonorId,
-                FirstName = x.FirstName,
+				Author = new SingleBloodRequestAuthor
+				{
+					Id = x.AuthorId,
+					Name = x.Author.FirstName + " " + x.Author.LastName
+				},
+				BloodType = new SingleBloodRequestBloodType
+                {
+                    Id = x.BloodTypeId,
+                    Type = x.BloodType.Type
+                },
+                UrgenceType = new SingleBloodRequestUrgence
+                {
+                    Id = x.UrgenceTypeId,
+                    Type = x.UrgenceType.Type
+				},
+				Hospital = x.HospitalId != null ? new SingleBloodRequestHospital
+				{
+					Id = x.HospitalId,
+					Name = x.Hospital.Name
+				} : null,
+				FirstName = x.FirstName,
                 LastName = x.LastName,
                 Age = x.Age,
                 Quantity = x.Quantity,
@@ -107,16 +124,35 @@ namespace PulseDonor.Application.BloodRequest.Services
 
         public async Task<GetBloodRequestDto> GetByIdAsync(int id)
         {
-            var bloodPoint = _context.BloodRequests.Where(x => x.Id == id).AsQueryable();
+            var bloodPoint = _context.BloodRequests
+                .Include(x => x.BloodType)
+				.Include(x => x.UrgenceType)
+				.Include(x => x.Hospital)
+				.Include(x => x.Author).Where(x => x.Id == id).AsQueryable();
 
             var points = bloodPoint.Select(x => new GetBloodRequestDto
             {
                 Id = x.Id,
-                AuthorId = x.AuthorId,
-                BloodTypeId = x.BloodTypeId,
-                UrgencTypeId = x.UrgenceTypeId,
-                HospitalId = x.HospitalId,
-                DonorId = x.DonorId,
+                Author = new SingleBloodRequestAuthor
+                {
+                    Id = x.AuthorId,
+                    Name = x.Author.FirstName + " " + x.Author.LastName
+                },
+				BloodType = new SingleBloodRequestBloodType
+				{
+					Id = x.BloodTypeId,
+					Type = x.BloodType.Type
+				},
+				UrgenceType = new SingleBloodRequestUrgence
+				{
+					Id = x.UrgenceTypeId,
+					Type = x.UrgenceType.Type
+				},
+				Hospital = x.HospitalId != null? new SingleBloodRequestHospital
+				{
+					Id = x.HospitalId,
+					Name = x.Hospital.Name
+				} : null,
                 FirstName = x.FirstName,
                 LastName = x.LastName,
                 Age = x.Age,

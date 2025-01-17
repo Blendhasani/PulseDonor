@@ -161,11 +161,10 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionFilterMiddleware>();
 
-if (app.Environment.IsDevelopment())
-{
+
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+
 
 app.UseHttpsRedirection();
 
