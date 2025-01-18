@@ -26,7 +26,7 @@ namespace PulseDonor.Application.Hospitals.Services
             {
                 CityId = cmd.CityId,
                 Name = cmd.Name,
-                Address = cmd.Address
+                Address = cmd.Address,
             };
 
             await _context.Hospitals.AddAsync(hospital);
@@ -72,6 +72,7 @@ namespace PulseDonor.Application.Hospitals.Services
             return hospital.Select(x => new GetHospitalsDto
             {
                 Id = x.Id,
+                CityId = x.CityId,
                 Address = x.Address,
                 City = x.City.Name,
                 Name = x.Name,
@@ -87,7 +88,9 @@ namespace PulseDonor.Application.Hospitals.Services
                 Id = x.Id,
                 Address = x.Address,
                 CityId = x.CityId,
-                Name = x.Name
+                Name = x.Name,
+                City = x.City.Name
+                
             }).FirstOrDefault();
 
             return hospital;

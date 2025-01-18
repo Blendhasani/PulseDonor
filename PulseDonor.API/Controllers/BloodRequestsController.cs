@@ -73,5 +73,16 @@ namespace PulseDonor.API.Controllers
 			};
 			return Ok(result);
         }
+
+        [HttpDelete("send-request/{id:int}")]
+        public async Task<IActionResult> SendRequest(int id)
+        {
+            var deletedBloodRequest = await _bloodService.DeleteAsync(id);
+            var result = new
+            {
+                data = deletedBloodRequest
+            };
+            return Ok(result);
+        }
     }
 }

@@ -33,6 +33,8 @@ using PulseDonor.Application.BloodRequest.Services;
 using PulseDonor.Application.HallOfFame.Interfaces;
 using PulseDonor.Application.HallOfFame.Services;
 using PulseDonor.Application.HallOfFame.Commands;
+using PulseDonor.Application.Testimonials.Interfaces;
+using PulseDonor.Application.Testimonials.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -156,6 +158,7 @@ builder.Services.AddScoped<IBloodDonationPointsAPIService, BloodDonationPointsAP
 builder.Services.AddScoped<IHospitalAPIService, HospitalAPIService>();
 builder.Services.AddScoped<IBloodRequestAPIService, BloodRequestAPIService>();
 builder.Services.AddScoped<IHallOfFameService, HallOfFameService>();
+builder.Services.AddScoped<ITestimonialsAPIService, TestimonialsAPIService>();
 
 var app = builder.Build();
 

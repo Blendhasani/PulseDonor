@@ -39,7 +39,7 @@ namespace PulseDonor.MVC.Controllers
             {
                 return View(model);
             }
-
+            model.CityId = 3;
             var result = await _service.AddAsync(model);
 
             return RedirectToAction("Index");

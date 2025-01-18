@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using PulseDonor.Application.BloodRequest.Command;
 using PulseDonor.Application.BloodRequest.Interfaces;
+using PulseDonor.Application.CurrentUser.Interface;
 using PulseDonor.Application.Hospitals.Commands;
 using PulseDonor.Application.Hospitals.Interfaces;
 
@@ -12,9 +13,12 @@ namespace PulseDonor.API.Controllers
     public class HospitalController : ControllerBase
     {
         private readonly IHospitalAPIService _service;
-        public HospitalController(IHospitalAPIService service)
+        private readonly ICurrentUser _currentUser;
+
+        public HospitalController(IHospitalAPIService service, ICurrentUser currentUser)
         {
             _service = service;
+            _currentUser = currentUser;
         }
 
         [HttpPost("add")]

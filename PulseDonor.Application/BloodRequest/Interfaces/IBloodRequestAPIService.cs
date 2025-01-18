@@ -15,5 +15,6 @@ namespace PulseDonor.Application.BloodRequest.Interfaces
         Task<GetBloodRequestDto> GetByIdAsync(int id);
         Task<int> EditAsync(EditBloodRequestCommand cmd);
         Task<int> DeleteAsync(int id);
+        Task<int> SendRequest(int id);
     }
 }
