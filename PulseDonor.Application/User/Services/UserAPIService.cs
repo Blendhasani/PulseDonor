@@ -13,6 +13,7 @@ using PulseDonor.Application.User.Commands;
 using System.Security.Cryptography;
 using PulseDonor.Application.City.Commands;
 using PulseDonor.Application.CurrentUser.Interface;
+using PulseDonor.Application.Enums;
 
 
 namespace PulseDonor.Application.User.Services
@@ -53,7 +54,7 @@ namespace PulseDonor.Application.User.Services
 				return "Request Failed";
 			}
 
-			await _userManager.AddToRoleAsync(user, "Admin");
+			await _userManager.AddToRoleAsync(user, ApplicationRoles.Admin.ToString());
 			return user.Id;
 		}
 

@@ -74,6 +74,18 @@ namespace PulseDonor.API.Controllers
 			return Ok(result);
         }
 
+        [HttpPost("apply-for-request/{id}")]
+        public async Task<IActionResult> ApplyForRequest(int id)
+        {
+            var appliedRequest = await _bloodService.ApplyForRequestAsync(id);
+
+			var result = new
+			{
+				data = appliedRequest
+			};
+			return Ok(result);
+		}
+
         [HttpPost("send-request/{id:int}")]
         public async Task<IActionResult> SendRequest(int id)
         {
@@ -84,5 +96,6 @@ namespace PulseDonor.API.Controllers
             };
             return Ok(result);
         }
+
     }
 }

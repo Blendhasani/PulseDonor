@@ -14,7 +14,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-
+using PulseDonor.Application.Enums;
 namespace PulseDonor.Application.Authentication.Services
 {
     public class AuthService : IAuthService
@@ -40,25 +40,30 @@ namespace PulseDonor.Application.Authentication.Services
 		public async Task<string> SignupAsync(SignupCommand command)
         {
             var dto = command.SignupDto;
-            var user = new PulseDonor.Infrastructure.Models.User
+            //var user = new PulseDonor.Infrastructure.Models.User
+            var user = new ApplicationUser
 			{
-                Id = Guid.NewGuid().ToString(),
-                UserName = dto.UserName,
+                UserName = dto.Email.Trim(),
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
                 GenderId = dto.GenderId,
-                //EmailConfirmed = true,
+                EmailConfirmed = true,
                 BloodTypeId = dto.BloodTypeId,
                 InsertedDate = DateTime.UtcNow,
                 IsActive = true
                 //PasswordHash = _passwordHasher.HashPassword(null!, dto.Password)
             };
+			var result = await _userManager.CreateAsync(user, dto.Password);
 
-            await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+			if (!result.Succeeded)
+			{
+				return "Request Failed";
+			}
 
-            return "Signup successful";
+			await _userManager.AddToRoleAsync(user, ApplicationRoles.User.ToString());
+
+			return "Signup successful";
         }
 
         public async Task<string> LoginAsync(LoginCommand command)
@@ -97,7 +102,8 @@ namespace PulseDonor.Application.Authentication.Services
                 {
                 new Claim(ClaimTypes.NameIdentifier, user.Id),
                 new Claim(ClaimTypes.Name, user.UserName!),
-                new Claim(ClaimTypes.Email, user.Email!)
+                new Claim(ClaimTypes.Email, user.Email!),
+                new Claim("BloodTypeId", user.BloodTypeId.ToString())
             }),
                 Expires = DateTime.UtcNow.AddHours(8),
                 Issuer = "https://localhost:7269",

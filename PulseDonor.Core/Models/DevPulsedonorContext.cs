@@ -56,12 +56,12 @@ public partial class DevPulsedonorContext : DbContext
             }
         }
 
-        if (insertedDateProperty != null && insertedDateProperty.PropertyType == typeof(DateTime?))
+        if (insertedDateProperty != null && insertedDateProperty.PropertyType == typeof(DateTime))
         {
-            var currentValue = insertedDateProperty.GetValue(entity) as DateTime?;
-            if (currentValue == null)
-            {
-                insertedDateProperty.SetValue(entity, DateTime.UtcNow);
+			var currentValue = (DateTime)insertedDateProperty.GetValue(entity);
+			if (currentValue == DateTime.MinValue)
+			{
+				insertedDateProperty.SetValue(entity, DateTime.UtcNow);
             }
         }
     }
