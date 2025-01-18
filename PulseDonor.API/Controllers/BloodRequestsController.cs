@@ -77,7 +77,7 @@ namespace PulseDonor.API.Controllers
         [HttpPost("send-request/{id:int}")]
         public async Task<IActionResult> SendRequest(int id)
         {
-            var deletedBloodRequest = await _bloodService.DeleteAsync(id);
+            var deletedBloodRequest = await _bloodService.SendRequest(id);
             var result = new
             {
                 data = deletedBloodRequest
