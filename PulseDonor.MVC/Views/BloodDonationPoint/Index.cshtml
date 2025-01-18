@@ -4,6 +4,7 @@
 
 <style>
 </style>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
 
 <div class="content  d-flex flex-column flex-column-fluid" id="kt_content">
 
@@ -16,7 +17,7 @@
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
                         <h3 class="card-label">
-                            Qytetet
+                            Pikat per dhurimin e gjakut
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -133,6 +134,7 @@
 <script src="~/js/scripts.bundle.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script defer src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
    	function addCity(id) {
@@ -216,7 +218,9 @@ function deleteCity(id) {
             pagination: true,
             columns: [
                 //{ field: 'id', title: 'Emri', autoHide: false, width: 400 },
-                { field: 'address', title: 'Emri', autoHide: false, width: 400 },
+                { field: 'address', title: 'Adresa', autoHide: false, width: 200 },
+                { field: 'startTime', title: 'Koha e fillimit', autoHide: false, width: 200 },
+                { field: 'endTime', title: 'Koha e mbarimit', autoHide: false, width: 200 },
                 {
                     field: 'actions',
                     title: 'Actions',

@@ -16,7 +16,7 @@
                 <div class="card-header flex-wrap border-0 pt-6 pb-0">
                     <div class="card-title">
                         <h3 class="card-label">
-                            Qytetet
+                            Storje suksesi
                         </h3>
                     </div>
                     <div class="card-toolbar">
@@ -136,13 +136,13 @@
 
 <script>
    	function addCity(id) {
-	$('#modalDefault').find('#modalContent').load('@Url.Action("Add", "Hospitals")', function () {
+	$('#modalDefault').find('#modalContent').load('@Url.Action("Add", "Testimonials")', function () {
         $('#modalDefault').modal('toggle')
 	});
     }
 
     function editCity(id) {
-    $('#modalDefault').find('#modalContent').load('@Url.Action("Edit", "Hospitals")' + '?id=' + encodeURIComponent(id), function () {
+        $('#modalDefault').find('#modalContent').load('@Url.Action("Edit", "Testimonials")' + '?id=' + encodeURIComponent(id), function () {
         $('#modalDefault').modal('toggle')
 	});
     }
@@ -160,7 +160,7 @@ function deleteCity(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
-                url: '@Url.Action("Delete", "Hospitals")',
+                    url: '@Url.Action("Delete", "Testimonials")',
                 type: 'POST',
                 data: { id: id },
                 success: function (response) {
@@ -216,7 +216,8 @@ function deleteCity(id) {
             pagination: true,
             columns: [
                 //{ field: 'id', title: 'Emri', autoHide: false, width: 400 },
-                { field: 'name', title: 'Emri', autoHide: false, width: 400 },
+                { field: 'title', title: 'Emri', autoHide: false, width: 150 },
+                { field: 'description', title: 'Mesazhi', autoHide: false, width: 450 },
                 {
                     field: 'actions',
                     title: 'Actions',

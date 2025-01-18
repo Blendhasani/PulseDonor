@@ -1,21 +1,53 @@
 ﻿
 @model PulseDonor.MVC.BloodDonationPoint.Commands.EditAPIBloodDonationPointCommand
-<div class="modal-header">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<style>
+    #map {
+        height: 400px; /* Set the height of the map */
+        margin-bottom: 20px;
+    }
+</style>
 
-    <h5 class="modal-title">Perditeso Qytetin</h5>
+<div class="modal-header">
+    <h5 class="modal-title">Shto nje pike per dhurimin e gjakut</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <i aria-hidden="true" class="ki ki-close"></i>
     </button>
 </div>
-<form asp-controller="City" asp-action="Edit" method="post">
+<form asp-controller="BloodDonationPoint" asp-action="Edit" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
     <input asp-for="Id" type="hidden" />
 
     <div class="modal-body">
         <div class="form-group">
-            <label>Emri <span class="text-danger">*</span></label>
+            <label>Adresa <span class="text-danger">*</span></label>
             <input type="text" asp-for="Address" class="form-control" />
             <span class="form-text text-danger" asp-validation-for="Address"></span>
+        </div>
+        <div class="form-group">
+            <label>Ora e fillimit <span class="text-danger">*</span></label>
+            <input type="time" asp-for="StartTime" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="StartTime"></span>
+        </div>
+        <div class="form-group">
+            <label>Ora e mbarimit <span class="text-danger">*</span></label>
+            <input type="time" asp-for="EndTime" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="EndTime"></span>
+        </div>
+
+        <!-- Map for selecting coordinates -->
+        <div id="map"></div>
+
+        <div class="form-group">
+            <label>Longitude<span class="text-danger">*</span></label>
+            <input type="text" id="longitude" asp-for="Longitude" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="Longitude"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Latitude<span class="text-danger">*</span></label>
+            <input type="text" id="latitude" asp-for="Latitude" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="Latitude"></span>
         </div>
     </div>
 
@@ -28,5 +60,34 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.12/jquery.validate.unobtrusive.min.js"></script>
+
+<script async>
+    // Initialize the map and set its view
+    const leafletMap = L.map('map').setView([42.667542, 21.166191], 13); // Set to a default location (Tirana, Albania)
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(leafletMap);
+
+    // Add a marker to the map
+    let marker = L.marker([42.667542, 21.166191], { draggable: true }).addTo(leafletMap);
+
+    // Function to update latitude and longitude fields when marker is dragged
+    marker.on('dragend', function (e) {
+        const { lat, lng } = marker.getLatLng();
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    });
+
+    // Function to place marker and update fields when clicking on the map
+    leafletMap.on('click', function (e) {
+        const { lat, lng } = e.latlng;
+        marker.setLatLng([lat, lng]);
+        document.getElementById('latitude').value = lat;
+        document.getElementById('longitude').value = lng;
+    });
+</script>
 
 

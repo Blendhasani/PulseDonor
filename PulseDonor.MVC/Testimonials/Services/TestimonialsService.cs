@@ -18,13 +18,13 @@ namespace PulseDonor.MVC.Testimonials.Services
 
         public async Task<int> AddAsync(AddTestimonialAPICommand cmd)
         {
-            string url = "https://localhost:7269/api/City/Add";
+            string url = "https://localhost:7269/api/Testimonials/Add";
             return await _apiClientHelper.PostAsync<AddTestimonialAPICommand, int>(url, cmd);
         }
 
         public async Task<int> DeleteAsync(int id)
         {
-            string url = "https://localhost:7269/api/City/Delete?id=" + id;
+            string url = "https://localhost:7269/api/Testimonials/Delete?id=" + id;
             return await _apiClientHelper.DeleteAsync<int>(url);
         }
 
@@ -36,7 +36,7 @@ namespace PulseDonor.MVC.Testimonials.Services
 
         public async Task<List<GetTestimonialAPIDto>> GetAllAsync()
         {
-            string url = "https://localhost:7269/api/City/GetList";
+            string url = "https://localhost:7269/api/Testimonials/GetAll";
             var data = await _apiClientHelper.GetAsync<List<GetTestimonialAPIDto>>(url);
 
             return data.Select(x => new GetTestimonialAPIDto
@@ -50,7 +50,7 @@ namespace PulseDonor.MVC.Testimonials.Services
 
         public async Task<GetTestimonialAPIDto> GetByIdAsync(int id)
         {
-            string url = "https://localhost:7269/api/City/Get";
+            string url = "https://localhost:7269/api/Testimonials/GetById";
 
             var data = await _apiClientHelper.GetByIdAsync<GetTestimonialAPIDto>(url, id);
 

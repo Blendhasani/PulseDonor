@@ -17,13 +17,14 @@ namespace PulseDonor.Application.BloodRequest.Services
     {
         private readonly DevPulsedonorContext _context;
         private readonly ICurrentUser _currentUser;
-		public BloodRequestAPIService(DevPulsedonorContext context, ICurrentUser currentUser)
-		{
-			_context = context;
-			_currentUser = currentUser;
-		}
 
-		public async Task<int> AddAsync(AddBloodeRequestCommand cmd)
+        public BloodRequestAPIService(DevPulsedonorContext context, ICurrentUser currentUser)
+        {
+            _context = context;
+            _currentUser = currentUser;
+        }
+
+        public async Task<int> AddAsync(AddBloodeRequestCommand cmd)
         {
             var bloodPoint = new PulseDonor.Infrastructure.Models.BloodRequest
             {
@@ -36,6 +37,8 @@ namespace PulseDonor.Application.BloodRequest.Services
                Quantity = cmd.Quantity,
                DonationDate = cmd.DonationDate,
                DonationTime = cmd.DonationTime,
+               InsertedDate = DateTime.Now,
+               InsertedFrom = _currentUser.UserId,
             };
 
             await _context.BloodRequests.AddAsync(bloodPoint);
@@ -77,6 +80,22 @@ namespace PulseDonor.Application.BloodRequest.Services
             await _context.SaveChangesAsync();
 
             return 1;
+        }
+
+        public async Task<int> SendRequest(int id)
+        {
+            var bloodReq = new PulseDonor.Infrastructure.Models.BloodRequestApplication
+            {
+                UserId = _currentUser.UserId,
+                BloodRequestId = id,
+                InsertedDate = DateTime.Now,
+                InsertedFrom = _currentUser.UserId
+            };
+
+            await _context.BloodRequestApplications.AddAsync(bloodReq);
+            await _context.SaveChangesAsync();
+
+            return bloodReq.Id;
         }
 
         public async Task<int> EditAsync(EditBloodRequestCommand cmd)

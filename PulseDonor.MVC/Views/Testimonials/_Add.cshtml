@@ -1,20 +1,24 @@
-﻿
-@model PulseDonor.MVC.Hospitals.Commands.AddHospitalAPICommand
+﻿@model PulseDonor.MVC.Testimonials.Command.AddTestimonialAPICommand
 <div class="modal-header">
 
-    <h5 class="modal-title">Shto qytetin</h5>
+    <h5 class="modal-title">Shto storje suksesi</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
         <i aria-hidden="true" class="ki ki-close"></i>
     </button>
 </div>
-<form asp-controller="City" asp-action="Add" method="post">
+<form asp-controller="Testimonials" asp-action="Add" method="post">
     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
     <div class="modal-body">
         <div class="form-group">
             <label>Emri <span class="text-danger">*</span></label>
-            <input type="text" asp-for="Name" class="form-control" />
-            <span class="form-text text-danger" asp-validation-for="Name"></span>
+            <input type="text" asp-for="Title" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="Title"></span>
+        </div>
+        <div class="form-group">
+            <label>Pershkrimi <span class="text-danger">*</span></label>
+            <input type="text" asp-for="Description" class="form-control" />
+            <span class="form-text text-danger" asp-validation-for="Description"></span>
         </div>
     </div>
 

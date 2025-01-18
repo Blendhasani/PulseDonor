@@ -46,6 +46,7 @@ namespace PulseDonor.MVC.Hospitals.Services
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    City = x.City,
                     Address = x.Address
 
                 }).ToList();
@@ -67,6 +68,7 @@ namespace PulseDonor.MVC.Hospitals.Services
             {
                 Id = data.Id,
                 Name = data.Name,
+                CityId = data.CityId,
                 Address = data.Address
             };
 

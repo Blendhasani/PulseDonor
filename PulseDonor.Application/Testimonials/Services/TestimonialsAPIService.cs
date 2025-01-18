@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PulseDonor.Application.City.DTO;
+using PulseDonor.Application.CurrentUser.Interface;
 using PulseDonor.Application.Testimonials.Command;
 using PulseDonor.Application.Testimonials.DTO;
 using PulseDonor.Application.Testimonials.Interfaces;
@@ -15,9 +16,11 @@ namespace PulseDonor.Application.Testimonials.Services
     public class TestimonialsAPIService : ITestimonialsAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public TestimonialsAPIService(DevPulsedonorContext context)
+        private readonly ICurrentUser _currentUser;
+        public TestimonialsAPIService(DevPulsedonorContext context, ICurrentUser currentUser)
         {
             _context = context;
+            _currentUser = currentUser;
         }
 
         public async Task<int> AddAsync(AddTestimonialCommand cmd)
@@ -26,6 +29,8 @@ namespace PulseDonor.Application.Testimonials.Services
             {
                 Title = cmd.Title,
                 Description = cmd.Description,
+                InsertedDate = DateTime.Now,
+                InsertedFrom = _currentUser.UserId,
             };
 
             await _context.SuccessStories.AddAsync(newTestimonial);

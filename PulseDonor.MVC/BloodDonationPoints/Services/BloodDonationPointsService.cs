@@ -35,7 +35,7 @@ namespace PulseDonor.MVC.BloodDonationPointsController.Services
 
         public async Task<List<GetAPIBloodDonationListDto>> GetAllAsync()
         {
-            string url = "https://localhost:7269/api/blood-donation-points/GetList";
+            string url = "https://localhost:7269/api/blood-donation-points/GetAll";
             var data = await _apiClientHelper.GetAsync<List<GetAPIBloodDonationListDto>>(url);
 
             return data.Select(x => new GetAPIBloodDonationListDto

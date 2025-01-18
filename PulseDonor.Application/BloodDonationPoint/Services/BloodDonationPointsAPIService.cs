@@ -3,6 +3,7 @@ using PulseDonor.Application.BloodDonationPoint.Commands;
 using PulseDonor.Application.BloodDonationPoint.DTO;
 using PulseDonor.Application.BloodDonationPoint.Interfaces;
 using PulseDonor.Application.City.DTO;
+using PulseDonor.Application.CurrentUser.Interface;
 using PulseDonor.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
@@ -15,9 +16,11 @@ namespace PulseDonor.Application.BloodDonationPoint.Services
     public class BloodDonationPointsAPIService : IBloodDonationPointsAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public BloodDonationPointsAPIService(DevPulsedonorContext context)
+        private readonly ICurrentUser _currentUser;
+        public BloodDonationPointsAPIService(DevPulsedonorContext context, ICurrentUser currentUser)
         {
             _context = context;
+            _currentUser = currentUser;
         }
 
         public async Task<int> AddAsync(AddBloodDonationPointCommand cmd)
@@ -28,7 +31,9 @@ namespace PulseDonor.Application.BloodDonationPoint.Services
                 StartTime = cmd.StartTime,
                 EndTime = cmd.EndTime,
                 Longitude = cmd.Longitude,
-                Latitude = cmd.Latitude
+                Latitude = cmd.Latitude,
+                InsertedDate = DateTime.Now,
+                InsertedFrom = _currentUser.UserId,
             };
 
             await _context.BloodDonationPoints.AddAsync(bloodPoint);
