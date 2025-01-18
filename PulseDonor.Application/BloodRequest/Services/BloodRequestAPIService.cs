@@ -3,6 +3,7 @@ using PulseDonor.Application.BloodDonationPoint.DTO;
 using PulseDonor.Application.BloodRequest.Command;
 using PulseDonor.Application.BloodRequest.DTO;
 using PulseDonor.Application.BloodRequest.Interfaces;
+using PulseDonor.Application.CurrentUser.Interface;
 using PulseDonor.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,14 @@ namespace PulseDonor.Application.BloodRequest.Services
     public class BloodRequestAPIService : IBloodRequestAPIService
     {
         private readonly DevPulsedonorContext _context;
-        public BloodRequestAPIService(DevPulsedonorContext context)
-        {
-            _context = context;
-        }
+        private readonly ICurrentUser _currentUser;
+		public BloodRequestAPIService(DevPulsedonorContext context, ICurrentUser currentUser)
+		{
+			_context = context;
+			_currentUser = currentUser;
+		}
 
-        public async Task<int> AddAsync(AddBloodeRequestCommand cmd)
+		public async Task<int> AddAsync(AddBloodeRequestCommand cmd)
         {
             var bloodPoint = new PulseDonor.Infrastructure.Models.BloodRequest
             {
@@ -41,7 +44,28 @@ namespace PulseDonor.Application.BloodRequest.Services
             return bloodPoint.Id;
         }
 
-        public async Task<int> DeleteAsync(int id)
+		public async Task<int> ApplyForRequestAsync(int id)
+		{
+            var bloodRequest = await _context.BloodRequests.Where(x=>x.Id == id && !x.IsDeleted && x.DonorId == null).FirstOrDefaultAsync();
+
+            if(bloodRequest == null)
+            {
+                return 0;
+            }
+
+            var newApplication = new BloodRequestApplication()
+            {
+                BloodRequestId = id,
+                UserId = _currentUser.UserId
+
+            };
+
+            await _context.BloodRequestApplications.AddAsync(newApplication);
+            await _context.SaveChangesAsync();
+            return newApplication.Id;
+		}
+
+		public async Task<int> DeleteAsync(int id)
         {
             if (id == 0) return 0;
 
@@ -87,6 +111,7 @@ namespace PulseDonor.Application.BloodRequest.Services
                 .Include(x=>x.UrgenceType)
                 .Include(x=>x.Hospital)
                 .Include(x=>x.Author)
+                .Where(x=>x.DonorId == null)
                 .AsQueryable();
 
             return blood.Select(x => new GetBloodRequestDto

@@ -18,4 +18,17 @@ public class CurrentUser : ICurrentUser
     public string Email => User?.FindFirstValue(ClaimTypes.Email);
     public bool IsAuthenticated => User?.Identity?.IsAuthenticated ?? false;
     public IEnumerable<string> Roles => User?.FindAll(ClaimTypes.Role).Select(r => r.Value) ?? Enumerable.Empty<string>();
+	public int BloodTypeId
+	{
+		get
+		{
+			var bloodTypeIdClaim = User?.FindFirstValue("BloodTypeId");
+			if (int.TryParse(bloodTypeIdClaim, out var bloodTypeId))
+			{
+				return bloodTypeId;
+			}
+			throw new InvalidOperationException("BloodTypeId claim is missing or invalid.");
+		}
+	}
+
 }

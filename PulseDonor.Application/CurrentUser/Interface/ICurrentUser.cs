@@ -13,5 +13,6 @@ namespace PulseDonor.Application.CurrentUser.Interface
         string Email { get; }
         bool IsAuthenticated { get; }
         IEnumerable<string> Roles { get; }
+        int BloodTypeId { get; }
     }
 }

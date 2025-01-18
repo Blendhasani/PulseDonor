@@ -56,12 +56,12 @@ public partial class DevPulsedonorContext : DbContext
             }
         }
 
-        if (insertedDateProperty != null && insertedDateProperty.PropertyType == typeof(DateTime?))
+        if (insertedDateProperty != null && insertedDateProperty.PropertyType == typeof(DateTime))
         {
-            var currentValue = insertedDateProperty.GetValue(entity) as DateTime?;
-            if (currentValue == null)
-            {
-                insertedDateProperty.SetValue(entity, DateTime.UtcNow);
+			var currentValue = (DateTime)insertedDateProperty.GetValue(entity);
+			if (currentValue == DateTime.MinValue)
+			{
+				insertedDateProperty.SetValue(entity, DateTime.UtcNow);
             }
         }
     }
@@ -115,8 +115,8 @@ public partial class DevPulsedonorContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-	//=> optionsBuilder.UseSqlServer("Server=localhost;Database=dev-pulsedonor;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True");
- => optionsBuilder.UseSqlServer("Server=SQL6029.site4now.net;Database=db_ab1c2b_pulsedonor;User Id=db_ab1c2b_pulsedonor_admin;Password=yd8V_uXVXbYCJ!R;Encrypt=True;TrustServerCertificate=True;");
+    => optionsBuilder.UseSqlServer("Server=localhost;Database=dev-pulsedonor;Trusted_Connection=True;Encrypt=True;TrustServerCertificate=True");
+    //=> optionsBuilder.UseSqlServer("Server=SQL6029.site4now.net;Database=db_ab1c2b_pulsedonor;User Id=db_ab1c2b_pulsedonor_admin;Password=yd8V_uXVXbYCJ!R;Encrypt=True;TrustServerCertificate=True;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

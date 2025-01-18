@@ -8,12 +8,13 @@ namespace PulseDonor.Application.Authentication.DTO
 {
     public class SignupDto
     {
-        public string UserName { get; set; } = null!;
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
         public string Email { get; set; } = null!;
         public string Password { get; set; } = null!;
-        public int GenderId { get; set; }
-        public int BloodTypeId { get; set; }
-    }
+        public string PhoneNumber { get; set; } = null!;
+		public int GenderId { get; set; } = 0!;
+		public int BloodTypeId { get; set; } = 0!;
+		public int CityId { get; set; } = 0!;
+	}
 }

@@ -16,7 +16,7 @@ namespace PulseDonor.Application.Account.Commands
 		public int PrimaryCityId { get; set; }
 		public int? PrimaryCityIdToDelete { get; set; }
 
-		public List<int> SecondaryCities { get; set; }
+		public List<int>? SecondaryCities { get; set; }
 		public List<int>? SecondaryCityIdsToDelete { get; set; }
 		public bool Status { get;set; }
 	}

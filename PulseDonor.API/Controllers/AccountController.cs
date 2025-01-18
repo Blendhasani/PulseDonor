@@ -86,6 +86,28 @@ namespace PulseDonor.API.Controllers
 			return Ok(result);
 		}
 
+		[HttpGet("{id}/blood-request-applications")]
+		public async Task<IActionResult> GetBloodRequestApplications(int id)
+		{
+			var bloodRequestApplications = await _accountService.GetBloodRequestApplicationsAsync(id);
+			var result = new
+			{
+				data = bloodRequestApplications
+			};
+			return Ok(result);
+		}
+
+
+		[HttpPut("confirm-application/{id}")]
+		public async Task<IActionResult> ConfirmBloodRequestApplication(int id)
+		{
+			var confirmedBloodRequest = await _accountService.ConfirmBloodRequestApplicationAsync(id);
+			var result = new
+			{
+				data = confirmedBloodRequest
+			};
+			return Ok(result);
+		}
 		[HttpDelete("blood-request/{id}")]
 		public async Task<IActionResult> DeleteBloodRequestPost([FromRoute] int id)
 		{

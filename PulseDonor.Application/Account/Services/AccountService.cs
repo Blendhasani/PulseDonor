@@ -137,6 +137,7 @@ namespace PulseDonor.Application.Account.Services
 
 		public async Task<List<GetUserProfileBloodRequestsDto>> GetMyBloodRequestsAsync()
 		{
+
 			var bloodRequests = _context.BloodRequests
 				.Include(x => x.BloodType)
 				.Include(x => x.UrgenceType)
@@ -155,13 +156,15 @@ namespace PulseDonor.Application.Account.Services
 					Id = x.UrgenceTypeId,
 					Type = x.UrgenceType.Type,
 				},
-				DonationDate = x.DonationDate != null ? x.DonationDate.Value : null,
-				DonationTime = x.DonationTime != null ? x.DonationTime.Value : null,
-				Hospital = x.HospitalId != null ? new SingleUserProfileHospital
+				DonationDate = x.DonationDate ?? null,
+				DonationTime = x.DonationTime ?? null,
+				Hospital = x.Hospital == null
+				? null
+				: new SingleUserProfileHospital
 				{
-					Id = x.HospitalId,
+					Id = x.Hospital.Id,
 					Name = x.Hospital.Name
-				} : null,
+				},
 				NumberOfApplications = x.BloodRequestApplications.Where(y => !y.IsDeleted).Count(),
 
 			}).ToListAsync();
@@ -225,7 +228,7 @@ namespace PulseDonor.Application.Account.Services
 				.Include(x => x.UrgenceType)
 				.Include(x => x.Hospital)
 				.Include(x => x.BloodRequestApplications)
-				.Where(x => !x.IsDeleted)
+				.Where(x => !x.IsDeleted && x.Id == id)
 				.AsQueryable();
 
 			if (bloodRequest is null)
@@ -274,7 +277,7 @@ namespace PulseDonor.Application.Account.Services
 							.Include(x => x.UrgenceType)
 							.Include(x => x.Hospital)
 							.Include(x => x.BloodRequestApplications)
-							.Where(x => !x.IsDeleted)
+							.Where(x => !x.IsDeleted && x.Id == id)
 							.FirstOrDefaultAsync();
 			if (bloodRequest is null)
 			{
@@ -412,6 +415,54 @@ namespace PulseDonor.Application.Account.Services
 			bloodApplication.IsDeleted = true;
 			await _context.SaveChangesAsync();
 			return "Kërkesa u plotësua!";
+
+		}
+
+		public async Task<List<SingleBloodRequestApplicationDto>> GetBloodRequestApplicationsAsync(int id)
+		{
+			if (id == 0)
+			{
+				return new List<SingleBloodRequestApplicationDto>();
+			}
+
+			var bloodRequestApplications = _context.BloodRequestApplications
+				.Include(x => x.BloodRequest)
+				.Include(x=>x.User)
+				.ThenInclude(x=>x.BloodType)
+				.Where(x => !x.IsDeleted && x.BloodRequestId == id)
+				.AsQueryable();
+
+			var response = await bloodRequestApplications.Select(x => new SingleBloodRequestApplicationDto
+			{
+				Id = x.Id,
+				BloodRequestId = id,
+				Fullname = x.User.FirstName + " " + x.User.LastName,
+				PhoneNumber = x.User.PhoneNumber,
+				Email = x.User.Email,
+				BloodType = x.User.BloodType.Type,
+				IsAccepted = x.BloodRequest.DonorId == x.UserId ? true : false,
+				CanConfirm = x.BloodRequest.DonorId == null
+
+			}).ToListAsync();
+			return response;
+		}
+
+		public async Task<int> ConfirmBloodRequestApplicationAsync(int id)
+		{
+			if (id == 0) return 0;
+
+			var application = await _context.BloodRequestApplications
+				.Include(x=>x.BloodRequest)
+				.Where(x=>x.Id == id)
+				.FirstOrDefaultAsync();
+
+			if (application == null) return 0;
+			if (application.BloodRequest.DonorId != null) return 0;
+
+			application.BloodRequest.DonorId = application.UserId;
+			await _context.SaveChangesAsync();
+			return application.Id;
+
 
 		}
 	}
